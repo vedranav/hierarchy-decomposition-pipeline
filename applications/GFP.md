@@ -9,7 +9,7 @@ The steps of the gene function prediction task are:
 2. Induce a classification model from the data,
 3. Use the model to predict biological function of genes with unknown or partially known function.
 
-![Gene function prediction data set](images/applications/GFP_dataset.png)
+![Gene function prediction data set](https://vedranav.github.io/hierarchy-decomposition-pipeline/images/applications/GFP_dataset.png)
 
 The data set has:
 - Class labels that represent multiple aspects of genes' biological functions. Labels are taken from [Gene Ontology](http://geneontology.org) and are represented with ID numbers (e.g., GO:0006629) and descriptions (e.g., lipid metabolic process).

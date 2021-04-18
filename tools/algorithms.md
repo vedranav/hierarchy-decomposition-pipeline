@@ -29,7 +29,7 @@ The algorithm constructs an ensemble for each child-parent pair in the hierarchy
 
 A new example is classified with all of the ensembles. A PCT leaf that the example reaches contains a probability of label *l* knowing its parent. The probabilities from multiple ensembles are pulled together and hierarchy constraint is applied on them.
 
-![Child vs. parent label approach](images/tools/Child_vs_parent_label.png)
+![Child vs. parent label approach](https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Child_vs_parent_label.png)
 
 ### Label specialization
 
@@ -42,7 +42,7 @@ The algorithm constructs an ensemble for each non-leaf node in the hierarchy. Th
 
 A new example is classified with all of the ensembles. A PCT leaf that the example reaches contains probabilities of children labels knowing their parent. The probabilities from multiple ensembles are pulled together and hierarchy constraint is applied on them.
 
-![Label specialization](images/tools/Label_specialization.png)
+![Label specialization](https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Label_specialization.png)
 
 
 ## Complete hierarchy decomposition algorithms
@@ -62,7 +62,7 @@ The algorithm constructs an ensemble that differentiates among the most specific
 
 When classifying a new example, a PCT leaf that the example reaches contains probabilities that the example is associated with each of the most specific labels. Probabilities for inner labels are zero.
 
-![Labels without hierarchical relations](images/tools/Labels_without_hierarchical_relations.png)
+![Labels without hierarchical relations](https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Labels_without_hierarchical_relations.png)
 
 ### Label vs. the rest
 
@@ -74,7 +74,7 @@ The algorithm constructs an ensemble for each of the most specific labels. Each 
 
 A new example is classified with all of the ensembles. A PCT leaf that the example reaches contains a probability that the example is associated with the label *l*. The probabilities from multiple ensembles are pulled together. Probabilities for inner labels are zero.
 
-![Label vs. the rest](images/tools/Label_vs_the_rest.png)
+![Label vs. the rest](https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Label_vs_the_rest.png)
 
 
 ## Why the pipeline implements five algorithms?
