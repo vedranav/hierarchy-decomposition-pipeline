@@ -5,12 +5,12 @@ Hierarchy decomposition pipeline is a supervised machine learning tool that cons
 ![Data set with hierarchical class](images/HMC_dataset.png)
 
 Suitable data sets have:
-- Class labels organized in a hierarchy
+- Class labels organised in a hierarchy
 - Hierarchy in the shape of a tree or directed acyclic graph
 - Examples annotated with one or several paths from the hierarchy
 
 ## Features
 
-- Five algorithms for constructing ensemble models from data sets with hierarchical class
+- Five algorithms that construct ensemble models from data sets with hierarchical class
 - Tool for comparing algorithms' predictive performances in cross-validation
-- Tool for annotating unlabelled examples
+- Tool for predicting paths from the hierarchy that best describe unlabelled examples
