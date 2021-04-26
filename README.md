@@ -14,3 +14,7 @@ Suitable data sets have:
 - Five algorithms that construct ensemble models from data sets with hierarchical class
 - Tool for comparing algorithms' predictive performances in cross-validation
 - Tool for predicting paths from the hierarchy that best describe unlabelled examples
+
+```warning
+This website is a work in progress. It may contain incomplete information and possibly errors. You can help by reviewing the content and posting your comments and corrections [here](https://github.com/vedranav/hierarchy-decomposition-pipeline/issues).
+```
