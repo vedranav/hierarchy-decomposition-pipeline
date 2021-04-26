@@ -18,6 +18,8 @@ Cross-validation is a resampling procedure used to estimate model's predictive p
 
 For each ensemble model the cross-validation procedure outputs a **table with confidences**. Rows in the table are examples, columns are labels (from a hierarchical class) and values are probabilities that the labels are associated with the examples. The probabilities indicate how confident the model is in the established associations. The table aggregates examples from *n* test sets.
 
+<div style = "background-color: #F8F8FF; border: 1px solid #B0C4DE; border-radius: 8px; padding: 0px 20px;">
+
 ### Example
 Suppose that we have a simple data set with a tree-shaped hierarchical class of five labels connected in the following manner:
 
@@ -75,3 +77,13 @@ The data set has ten examples. Two-fold cross-validation randomly divides exampl
         <td>e10</td> <td>0.92</td> <td>0.05</td> <td>0</td> <td>0</td> <td>0.01</td>
     </tr>
 </table>
+
+The table shows which paths from the hierarchy are more or less likely associated with each of the examples. For example, the baseline model is strongly confident in the association between the example e6 and l2 -> l3 path from the hierarchy (confidence &ge; 0.88).
+
+Note that confidence values for an individual example (within a row) satisfy hierarchy constraint. In other words, confidences for labels do not surpass the confidence of their parent label.
+
+</div>
+
+```tip
+The pipeline has a separate task that divides examples from an input data set (named baseline data set) into *n* folds. Once the cross-validation folds are created, the pipeline saves the information on which examples are associated with each of the folds. If you want to compare the algorithms on the same cross-validation folds, run this task only once. Then you can run any combination of the algorithms and all of them will be evaluated on the same cross-validation folds.
+```
