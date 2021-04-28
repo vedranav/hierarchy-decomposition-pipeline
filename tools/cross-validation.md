@@ -234,3 +234,34 @@ $$ \text{FPR} = \frac{\text{FP}}{\text{FP + TN}} $$
 while true positive rate is a synonym for recall.
 
 <img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/ROC_curve.png" alt = "ROC curve" width = "350">
+
+#### Measures of overall performance
+
+They summarize model's performance over [a set of most specific labels](https://vedranav.github.io/hierarchy-decomposition-pipeline/tools/algorithms.html#the-most-specific-labels), which are common to all five algorithms. By averaging over the most specific labels, the pipeline ensures fair performance-based comparison between the five algorithms.
+
+The measures are:
+- **Average AUPRC** is an arithmetic mean of label-based AUPRCs computed for labels that qualify as most specific
+- **Average AUC** is an arithmetic mean of label-based AUCs computed for labels that qualify as most specific
+- **Area under average precision recall curve**
+
+##### Area under average precision recall curve
+
+Suppose that a model predicts a set of most specific labels *M* for a set of examples. Area under average precision recall curve for *M* is computed in the following manner:
+
+- For each threshold *t* ranging from zero to one with the step of 0.01:
+    - Compute a confusion matrix at *t* for each label from *M*
+    - Compute a micro-average precision as (*n* is the number of labels in *M*):
+
+    $$ \text{precision}_t = \frac{\sum_{i=1}^{n}\text{TP}_i}{\sum_{i=1}^{n}\text{TP}_i + \sum_{i=1}^{n}\text{FP}_i} $$
+
+    - Compute a micro-average recall as:
+
+    $$ \text{recall}_t = \frac{\sum_{i=1}^{n}\text{TP}_i}{\sum_{i=1}^{n}\text{TP}_i + \sum_{i=1}^{n}\text{FN}_i} $$
+
+    - Add the point to a precision-recall graph
+- Draw a precision-recall curve using linear interpolation
+- Compute area under the curve.
+
+```note
+When you run an algorithm in a cross-validation mode, the pipeline will compute the described measures and output them to a file named "Evaluation_report.csv".
+```
