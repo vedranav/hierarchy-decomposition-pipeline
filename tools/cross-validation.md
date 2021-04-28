@@ -76,7 +76,7 @@ The data set has ten examples. Two-fold cross-validation randomly divides exampl
     </tr>
 </table>
 
-The table shows which paths from the hierarchy are more or less likely associated with each of the examples. For example, the baseline model is strongly confident in the association between the example e6 and l2 -> l3 path from the hierarchy (confidence &ge; 0.88).
+The table shows which paths from the hierarchy are more or less likely associated with each of the examples. For example, the baseline model is strongly confident in the association between the example e6 and l2 <i class="fa fa-long-arrow-right" aria-hidden="true"></i> l3 path from the hierarchy (confidence &ge; 0.88).
 
 Note that confidence values for an individual example (within a row) satisfy hierarchy constraint. In other words, confidences for labels do not surpass the confidence of their parent label.
 
@@ -201,3 +201,36 @@ The pipeline outputs a confusion matrix and threshold-dependent measures for eac
 ```warning
 Accuracy is not a good measure of model's performance in the case of highly unbalanced labels. An example of a highly unbalanced label is when in 100 examples five are labeled with *l* and 95 as not-*l*. In such case, a model that would always return not-*l* as an answer would have 0.95 accuracy. At the same time it would have zero precision, recall and F-measure. Be aware of unbalanced labels in data sets with large class hierarchy, where the number of positive examples reduce with the depth of hierarchy.
 ```
+
+### Threshold-independent measures
+
+Threshold-independent measures indicate model's predictive performance over a range of confidence thresholds. The pipeline implements two such measures: AUPRC and AUC. They are computed for each label and as averages over all labels.
+
+#### Label-based measures
+
+##### Area under precision-recall curve (AUPRC)
+
+Suppose that a model predicts a label *l* for a set of examples. AUPRC for *l* is computed in the following manner:
+- Collect thresholds, i.e. a set of distinct confidence values that the model outputted for *l*
+- For each threshold *t*:
+    - Compute precision at *t*
+    - Compute recall at *t*
+- Draw precision-recall curve where:
+    - Recall is on x-axis and precision on y-axis
+    - Points are the values of precision and recall for thresholds
+    - Curve is drawn using linear interpolation
+- Compute AUPRC as an area under the curve.
+
+<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Precision-recall_curve.png" alt = "Precision-recall curve" width = "350">
+
+##### Area under the ROC curve (AUC)
+
+AUC is computed by following the same steps as in the case of AUPRC, with an exception that recall on x-axis is substituted with false positive rate and precision on y-axis with true positive rate.
+
+False positive rate is computed as
+
+$$ \text{FPR} = \frac{\text{FP}}{\text{FP + TN}} $$
+
+while true positive rate is a synonym for recall.
+
+<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/ROC_curve.png" alt = "ROC curve" width = "350">
