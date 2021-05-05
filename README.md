@@ -18,5 +18,5 @@ Suitable data sets have:
 The pipeline is described in more detail on [project website](https://vedranav.github.io/hierarchy-decomposition-pipeline/).
 
 <div style="color:red"><b>Warning!</b></div>
-This project is a work in progress. You can help by reviewing the content and [posting your comments and corrections](https://github.com/vedranav/hierarchy-decomposition-pipeline/issues).
+This project is a work in progress. If you have any problems with the code or documentation please report as issues.
 
