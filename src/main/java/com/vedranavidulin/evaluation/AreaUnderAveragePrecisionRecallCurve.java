@@ -1,23 +1,23 @@
 /*
- * Copyright (c) 2020 Vedrana Vidulin <vedrana.vidulin@gmail.com>
+ * Copyright (c) 2021 Vedrana Vidulin
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
  */
 package com.vedranavidulin.evaluation;
 
@@ -45,70 +45,67 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.TrapezoidIntegrator;
 import org.apache.commons.math3.analysis.interpolation.LinearInterpolator;
 import static org.apache.commons.math3.util.Precision.round;
+import static com.vedranavidulin.main.HierarchyDecompositionPipeline.settings;
 
 /**
  *
- * @author Vedrana Vidulin <vedrana.vidulin@gmail.com>
+ * @author Vedrana Vidulin
  */
 public class AreaUnderAveragePrecisionRecallCurve {
     private static Map<String, Set<String>> label2examples;
-    private static Table<String, String, Double> exampleLabelConfidence;
+    private static Table<String, String, Float> exampleLabelConfidence;
     private static List<String> labels;
     
     public AreaUnderAveragePrecisionRecallCurve() {}
     
-    public double run(Table<String, String, Double> exampleLabelConfidence, Map<String, Set<String>> label2examples,
-                      Set<String> theMostSpecificLabels, int maxNumProcessors, File outFile) throws IOException, InterruptedException, ExecutionException {
-        double auprc;
-        
-        int numProcessors = Runtime.getRuntime().availableProcessors() > maxNumProcessors ? maxNumProcessors : Runtime.getRuntime().availableProcessors();
-        
+    public float run(Table<String, String, Float> exampleLabelConfidence, Map<String, Set<String>> label2examples, Set<String> theMostSpecificLabels, File outFile) throws IOException, InterruptedException, ExecutionException {
+        float auprc;
+
         AreaUnderAveragePrecisionRecallCurve.label2examples = label2examples;
         AreaUnderAveragePrecisionRecallCurve.exampleLabelConfidence = exampleLabelConfidence;
         AreaUnderAveragePrecisionRecallCurve.labels = new ArrayList<>(exampleLabelConfidence.columnKeySet());
-        
-        ExecutorService executor = Executors.newFixedThreadPool(numProcessors);
-        CompletionService<Map<Double, List<Integer>>> cservice = new ExecutorCompletionService<>(executor);
+
+        ExecutorService executor = Executors.newFixedThreadPool(Math.min(Runtime.getRuntime().availableProcessors(), settings.getNumProcessors()));
+        CompletionService<Map<Float, List<Integer>>> cservice = new ExecutorCompletionService<>(executor);
         for (int i = 0; i < labels.size(); i++)
-            cservice.submit(new AreaUnderAveragePrecisionRecallCurve.Task(i));
-        
-        
-        Map<Double, Map<String, List<Integer>>> thresholdLabelTpFpFn = new TreeMap<>();
+            cservice.submit(new Task(i));
+
+        Map<Float, Map<String, List<Integer>>> thresholdLabelTpFpFn = new TreeMap<>();
         for (int i = 0; i < labels.size(); i++) {
-            Map<Double, List<Integer>> thresholdTpFpFn = (Map<Double, List<Integer>>)cservice.take().get();
-            
-            String label = labels.get(thresholdTpFpFn.get(-1.0).get(0));
-            thresholdTpFpFn.remove(-1.0);
-            
-            for (double t : thresholdTpFpFn.keySet()) {
+            Map<Float, List<Integer>> thresholdTpFpFn = cservice.take().get();
+
+            String label = labels.get(thresholdTpFpFn.get(-1f).get(0));
+            thresholdTpFpFn.remove(-1f);
+
+            for (float t : thresholdTpFpFn.keySet()) {
                 List<Integer> tpFpFn = thresholdTpFpFn.get(t);
-                
+
                 Map<String, List<Integer>> labelTpFpFn = new HashMap<>();
                 if (thresholdLabelTpFpFn.containsKey(t))
                     labelTpFpFn = thresholdLabelTpFpFn.get(t);
-                
+
                 labelTpFpFn.put(label, tpFpFn);
                 thresholdLabelTpFpFn.put(t, labelTpFpFn);
             }
         }
-        
-        Map<Double, List<Double>> recallPrecisions = new TreeMap<>();
+
+        Map<Float, List<Float>> recallPrecisions = new TreeMap<>();
         for (int i = 0; i <= 100; i++) {
-            double threshold = round((double)i / 100.0, 2);
+            float threshold = round((float)i / 100f, 2);
                         
             if (!thresholdLabelTpFpFn.containsKey(threshold))
                 continue;
             
-            int tTPsum = 0;
-            int tFPsum = 0;
-            int tFNsum = 0;
+            int tTPSum = 0;
+            int tFPSum = 0;
+            int tFNSum = 0;
             
             for (String label : labels)
                 if (theMostSpecificLabels.contains(label)) {
                     List<Integer> tpFpFn = new ArrayList<>();
 
                     if (!thresholdLabelTpFpFn.get(threshold).containsKey(label)) {
-                        for (double tt : thresholdLabelTpFpFn.keySet())
+                        for (float tt : thresholdLabelTpFpFn.keySet())
                             if (tt > threshold && thresholdLabelTpFpFn.get(tt).containsKey(label)) {
                                 tpFpFn = thresholdLabelTpFpFn.get(tt).get(label);
                                 break;
@@ -117,36 +114,35 @@ public class AreaUnderAveragePrecisionRecallCurve {
                         tpFpFn = thresholdLabelTpFpFn.get(threshold).get(label);
 
                     if (tpFpFn.size() == 3) {
-                        tTPsum += tpFpFn.get(0);
-                        tFPsum += tpFpFn.get(1);
-                        tFNsum += tpFpFn.get(2);
+                        tTPSum += tpFpFn.get(0);
+                        tFPSum += tpFpFn.get(1);
+                        tFNSum += tpFpFn.get(2);
                     }
                 }
             
-            double microAvgPrecision = 0.0;
-            if (tTPsum + tFPsum > 0)
-                microAvgPrecision = round((double)tTPsum / (double)(tTPsum + tFPsum), 2);
+            float microAvgPrecision = 0f;
+            if (tTPSum + tFPSum > 0)
+                microAvgPrecision = round((float)tTPSum / (float)(tTPSum + tFPSum), 2);
             
-            double microAvgRecall = 0.0;
-            if (tTPsum + tFNsum > 0)
-                microAvgRecall = round((double)tTPsum / (double)(tTPsum + tFNsum), 2);
+            float microAvgRecall = 0f;
+            if (tTPSum + tFNSum > 0)
+                microAvgRecall = round((float)tTPSum / (float)(tTPSum + tFNSum), 2);
             
-            List<Double> precisions = new ArrayList<>();
+            List<Float> precisions = new ArrayList<>();
             if (recallPrecisions.containsKey(microAvgRecall))
                 precisions = recallPrecisions.get(microAvgRecall);
             precisions.add(microAvgPrecision);
             recallPrecisions.put(microAvgRecall, precisions);
         }
         
-        if (!recallPrecisions.containsKey(0.0))
-            recallPrecisions.put(0.0, recallPrecisions.get(Collections.min(recallPrecisions.keySet())));
-        
-        
+        if (!recallPrecisions.containsKey(0f))
+            recallPrecisions.put(0f, recallPrecisions.get(Collections.min(recallPrecisions.keySet())));
+
         double[] r = new double[recallPrecisions.size()];
         double[] p = new double[recallPrecisions.size()];
             
         int cnt = 0;
-        for (double rr : recallPrecisions.keySet()) {
+        for (float rr : recallPrecisions.keySet()) {
             r[cnt] = rr;
             p[cnt] = Collections.max(recallPrecisions.get(rr));
             cnt++;
@@ -155,20 +151,20 @@ public class AreaUnderAveragePrecisionRecallCurve {
         UnivariateFunction interpolationFunction = new LinearInterpolator().interpolate(r, p);
             
         for (int i = 0; i <= 100; i++) {
-            double rec = round((double)i / 100.0, 2);
+            float rec = round((float)i / 100f, 2);
             if (!recallPrecisions.containsKey(rec)) {
-                List<Double> precisions = new ArrayList<>();
-                precisions.add(round(interpolationFunction.value(rec), 2));
+                List<Float> precisions = new ArrayList<>();
+                precisions.add((float)round(interpolationFunction.value(rec), 2));
                 recallPrecisions.put(rec, precisions);
             }
         }
-        
-        auprc = round(new TrapezoidIntegrator().integrate(500000, interpolationFunction, 0.0, 1.0), 4);
+
+        auprc = round((float)new TrapezoidIntegrator().integrate(500000, interpolationFunction, 0.0, 1.0), 4);
         
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outFile))) {
             bw.write("# Area under the average precision recall curve: " + auprc + "\n");
             bw.write("# Recall\tPrecision\n");
-            for (double recall : recallPrecisions.keySet())
+            for (float recall : recallPrecisions.keySet())
                 bw.write(recall + "\t" + Collections.max(recallPrecisions.get(recall)) + "\n");
         }
         
@@ -177,7 +173,7 @@ public class AreaUnderAveragePrecisionRecallCurve {
         return auprc;
     }
     
-    public class Task implements Callable <Map<Double, List<Integer>>> {
+    public static class Task implements Callable <Map<Float, List<Integer>>> {
         private final int labelPosition;
         
         public Task(int labelPosition) {
@@ -185,25 +181,24 @@ public class AreaUnderAveragePrecisionRecallCurve {
         }
         
         @Override
-        public Map<Double, List<Integer>> call() throws Exception {
-            Map<Double, List<Integer>> thresholdTpFpFn = new TreeMap<>();
-            
-            Set<Double> thresholds = new HashSet<>();
+        public Map<Float, List<Integer>> call() {
+            Map<Float, List<Integer>> thresholdTpFpFn = new TreeMap<>();
+            Set<Float> thresholds = new HashSet<>();
             for (String example : exampleLabelConfidence.rowKeySet())
                 thresholds.add(round(exampleLabelConfidence.get(example, labels.get(labelPosition)), 2));
-            
-            for (double t : thresholds) {
+
+            for (float t : thresholds) {
                 int TP = 0;
                 int FP = 0;
                 int FN = 0;
-                
+
                 for (String example : exampleLabelConfidence.rowKeySet()) {
-                    double conf = round(exampleLabelConfidence.get(example, labels.get(labelPosition)), 2);
-                    if (conf >= t && label2examples.get(labels.get(labelPosition)).contains(example))
+                    float conf = round(exampleLabelConfidence.get(example, labels.get(labelPosition)), 2);
+                    if (conf >= t && label2examples.containsKey(labels.get(labelPosition)) && label2examples.get(labels.get(labelPosition)).contains(example))
                         TP++;
-                    else if (conf >= t && !label2examples.get(labels.get(labelPosition)).contains(example))
+                    else if (conf >= t && (!label2examples.containsKey(labels.get(labelPosition)) || !label2examples.get(labels.get(labelPosition)).contains(example)))
                         FP++;
-                    else if (conf < t && label2examples.get(labels.get(labelPosition)).contains(example))
+                    else if (conf < t && label2examples.containsKey(labels.get(labelPosition)) && label2examples.get(labels.get(labelPosition)).contains(example))
                         FN++;
                 }
 
@@ -213,11 +208,11 @@ public class AreaUnderAveragePrecisionRecallCurve {
                 tpFpFn.add(FN);
                 thresholdTpFpFn.put(t, tpFpFn);
             }
-            
+
             List<Integer> labelPos = new ArrayList<>();
             labelPos.add(labelPosition);
-            thresholdTpFpFn.put(-1.0, labelPos);
-            
+            thresholdTpFpFn.put(-1f, labelPos);
+
             return thresholdTpFpFn;
         }
     }
@@ -225,7 +220,7 @@ public class AreaUnderAveragePrecisionRecallCurve {
     private void shutdownExecutor(ExecutorService executor) {
         try {
             executor.shutdown();
-            executor.awaitTermination(5, TimeUnit.SECONDS);
+            executor.awaitTermination(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             System.err.println("Tasks interrupted!");
         } finally {

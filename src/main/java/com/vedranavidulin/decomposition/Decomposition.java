@@ -1,56 +1,47 @@
 /*
- * Copyright (c) 2020 Vedrana Vidulin <vedrana.vidulin@gmail.com>
+ * Copyright (c) 2021 Vedrana Vidulin
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
  */
 package com.vedranavidulin.decomposition;
 
-import static com.vedranavidulin.data.DataReadWrite.zipFile;
-import com.vedranavidulin.data.Dataset;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.vedranavidulin.data.DataReadWrite.findReaderType;
+import static com.vedranavidulin.main.HierarchyDecompositionPipeline.baselineDataset;
+import static com.vedranavidulin.data.DataReadWrite.zipFile;
+import static com.vedranavidulin.main.HierarchyDecompositionPipeline.settings;
+
 /**
  *
- * @author Vedrana Vidulin <vedrana.vidulin@gmail.com>
+ * @author Vedrana Vidulin
  */
 public class Decomposition {
-    private final Dataset baselineDataset;
     private Map<String, String> treeHierarchy;
-    private final Map<String, Set<String>> exampleId2labels;
-    private final Map<String, String> exampleId2attributeValues;
-    
-    public Decomposition(Dataset baselineDataset) {
-        this.baselineDataset = baselineDataset;
-        exampleId2labels = baselineDataset.getLabelValues();
-        exampleId2attributeValues = baselineDataset.getAttributeValues();
-    }
-    
+
     private void createDataset(Set<String> keepExamples, Set<String> keepLabels, String classificationProblem, String outFilePath) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(outFilePath)))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outFilePath))) {
             bw.write(baselineDataset.getHeader());
             
             switch (classificationProblem) {
@@ -70,11 +61,11 @@ public class Decomposition {
             
             bw.write("\n@DATA\n");
             
-            for (String example : exampleId2labels.keySet())
+            for (String example : baselineDataset.getLabelValues().keySet())
                 if (keepExamples.contains(example)) {
-                    bw.write(exampleId2attributeValues.get(example));
+                    bw.write(baselineDataset.getAttributeValues().get(example));
 
-                    Set<String> exampleLabels = exampleId2labels.get(example);
+                    Set<String> exampleLabels = baselineDataset.getLabelValues().get(example);
                     switch (classificationProblem) {
                         case "DAG":
                             bw.write("," + exampleLabels.toString().replace("[", "").replace("]", "").replace(", ", "@"));
@@ -83,7 +74,7 @@ public class Decomposition {
                             Set<String> treeExampleLabels = new TreeSet<>();
                             for (String label : exampleLabels)
                                 treeExampleLabels.add(treeHierarchy.get(label));
-                            removeOverlapingPaths(treeExampleLabels);
+                            removeOverlappingPaths(treeExampleLabels);
                             bw.write("," + treeExampleLabels.toString().replace("[", "").replace("]", "").replace(", ", "@"));
                             break;
                         case "COMPLETE":
@@ -101,11 +92,34 @@ public class Decomposition {
         }
         
         zipFile(outFilePath, outFilePath + ".zip");
-        new File(outFilePath).delete();
+        if (!new File(outFilePath).delete())
+            System.err.println("Can't remove " + outFilePath);
     }
     
     public void baseline(Set<String> keepExamples, String outFilePath) throws IOException {
         createDataset(keepExamples, null, baselineDataset.isTreeHierarchy() ? "TREE" : "DAG", outFilePath);
+    }
+
+    public void baselineAnnotate(String outTrainingFilePath, String outUnlabelledFilePath) throws IOException {
+        createDataset(baselineDataset.getLabelValues().keySet(), null, baselineDataset.isTreeHierarchy() ? "TREE" : "DAG", outTrainingFilePath);
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(outUnlabelledFilePath))) {
+            bw.write(baselineDataset.getHeader());
+            bw.write("@ATTRIBUTE CLASS HIERARCHICAL " + (baselineDataset.isTreeHierarchy() ?
+                        treeHierarchyHeader(baselineDataset.pairBasedHierarchyIntoTreePathHierarchy()) : baselineDataset.getHierarchy()) + "\n");
+            bw.write("\n@DATA\n");
+
+            String dummyLabel = baselineDataset.getLabels().iterator().next();
+            BufferedReader br = findReaderType(settings.getUnlabelledSet());
+            String line;
+            while((line = br.readLine()) != null)
+                if (!line.startsWith("@") && !line.isEmpty())
+                    bw.write(line.substring(0, line.lastIndexOf(",") + 1) + dummyLabel + "\n");
+        }
+
+        zipFile(outUnlabelledFilePath, outUnlabelledFilePath + ".zip");
+        if (!new File(outUnlabelledFilePath).delete())
+            System.err.println("Can't remove " + outUnlabelledFilePath);
     }
     
     public void completeDecomposition(Set<String> keepExamples, String outFilePath) throws IOException {
@@ -121,7 +135,7 @@ public class Decomposition {
             Set<String> keepExamplesWithParentLabel = new HashSet<>();
             if (!keepAllExamples && !parent.equals("root"))
                 for (String example : keepExamples)
-                    if (exampleId2labels.get(example).contains(parent))
+                    if (baselineDataset.getLabelValues().get(example).contains(parent))
                         keepExamplesWithParentLabel.add(example);
             
             Set<String> keepLabels = new HashSet<>();
@@ -140,7 +154,7 @@ public class Decomposition {
             Set<String> keepExamplesWithParentLabel = new HashSet<>();
             if (!keepAllExamples  && !parent.equals("root"))
                 for (String example : keepExamples)
-                    if (exampleId2labels.get(example).contains(parent))
+                    if (baselineDataset.getLabelValues().get(example).contains(parent))
                         keepExamplesWithParentLabel.add(example);
             
             String outFilePath = outFilePathTemplate.substring(0, outFilePathTemplate.lastIndexOf("/") + 1) + 
@@ -151,7 +165,7 @@ public class Decomposition {
         }
     }
     
-    private void removeOverlapingPaths(Set<String> labels) {
+    private void removeOverlappingPaths(Set<String> labels) {
         Set<String> removeLabels = new TreeSet<>();
         for (String label : labels)
             for (String labelForComparison : labels)
@@ -161,10 +175,6 @@ public class Decomposition {
     }
     
     private String treeHierarchyHeader(Map<String, String> label2path) {
-        Set<String> header = new TreeSet<>();
-        for (String path : label2path.values())
-            header.add(path);
-        
-        return header.toString().replace("[", "").replace("]", "").replace(", ", ",");
+        return new TreeSet<>(label2path.values()).toString().replace("[", "").replace("]", "").replace(", ", ",");
     }
 }

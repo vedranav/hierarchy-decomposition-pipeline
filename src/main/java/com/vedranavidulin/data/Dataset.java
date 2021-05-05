@@ -1,35 +1,35 @@
 /*
- * Copyright (c) 2020 Vedrana Vidulin <vedrana.vidulin@gmail.com>
+ * Copyright (c) 2021 Vedrana Vidulin
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
  */
 package com.vedranavidulin.data;
 
-import static com.vedranavidulin.data.DataReadWrite.findReaderType;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import static com.vedranavidulin.data.DataReadWrite.findReaderType;
+import static com.vedranavidulin.main.HierarchyDecompositionPipeline.settings;
 
 /**
  *
- * @author Vedrana Vidulin <vedrana.vidulin@gmail.com>
+ * @author Vedrana Vidulin
  */
 public class Dataset {
     private final String header;
@@ -40,15 +40,13 @@ public class Dataset {
     private Set<List<String>> parentChildLabelPairs;
     private Set<String> labels;
     private Map<String, List<List<String>>> labelPaths;
-    private final String labelSubset;
-    
-    public Dataset(Properties prop) throws IOException {
+
+    public Dataset() throws IOException {
         StringBuilder headerSb = new StringBuilder();
         exampleId2attributeValues = new HashMap<>();
         exampleId2labels = new TreeMap<>();
-        labelSubset = prop.getProperty("labelSubset");
-        
-        BufferedReader br = findReaderType(new File(prop.getProperty("baselineDataset")));
+
+        BufferedReader br = findReaderType(settings.getBaselineDataset());
         String line;
         while((line=br.readLine()) != null)
             if (line.toUpperCase().startsWith("@ATTRIBUTE CLASS HIERARCHICAL"))
@@ -60,7 +58,7 @@ public class Dataset {
             else if (!line.startsWith("@") && !line.isEmpty()) {
                 String exampleId = line.substring(0, line.indexOf(","));
                 exampleId2attributeValues.put(exampleId, line.substring(0, line.lastIndexOf(",")));
-                exampleId2labels.put(exampleId, new TreeSet(Arrays.asList(line.substring(line.lastIndexOf(",") + 1).trim().split("@"))));
+                exampleId2labels.put(exampleId, new TreeSet<>(Arrays.asList(line.substring(line.lastIndexOf(",") + 1).trim().split("@"))));
             }
         
         header = headerSb.toString();
@@ -180,8 +178,7 @@ public class Dataset {
                 List<List<Integer>> allPathsIndices = dag.findAllPaths(i, labelsList.indexOf("root"));
                 for (List<Integer> pathIndices : allPathsIndices) {
                     List<String> path = new ArrayList<>();
-                    for (int j = 0; j < pathIndices.size(); j++)
-                        path.add(labelsList.get(pathIndices.get(j)));
+                    for (Integer pathIndex : pathIndices) path.add(labelsList.get(pathIndex));
                     allPaths.add(path);
                 }
                 labelPaths.put(labelsList.get(i), allPaths);
@@ -200,7 +197,7 @@ public class Dataset {
     }
     
     public Set<String> getTheMostSpecificLabels() {
-        if (labelSubset.equals("hierarchyLeaves"))
+        if (settings.getLabelSubset().equals("hierarchyLeaves"))
             return getLeavesOfHierarchy();
         else {
             Set<String> theMostSpecificLabels = new TreeSet<>();
