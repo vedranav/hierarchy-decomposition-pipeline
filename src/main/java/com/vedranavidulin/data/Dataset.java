@@ -39,7 +39,7 @@ public class Dataset {
     private Map<String, Set<String>> parent2childrenLabels;
     private Set<List<String>> parentChildLabelPairs;
     private Set<String> labels;
-    private Map<String, List<List<String>>> labelPaths;
+    private final Map<String, List<List<String>>> labelPaths;
 
     public Dataset() throws IOException {
         StringBuilder headerSb = new StringBuilder();
@@ -65,7 +65,7 @@ public class Dataset {
         collectParent2childrenLabels();
         collectParentChildLabelPairs();
         collectLabels();
-        propagateLabels();
+        labelPaths = propagateLabels(labels, parentChildLabelPairs);
     }
     
     public String getHeader() {
@@ -164,10 +164,11 @@ public class Dataset {
         }
     }
     
-    private void propagateLabels() {
-        labelPaths = new TreeMap<>();
+    public static Map<String, List<List<String>>> propagateLabels(Set<String> labels, Set<List<String>> parentChildLabelPairs) {
+        Map<String, List<List<String>>> labelPaths = new TreeMap<>();
         List<String> labelsList = new ArrayList<>(labels);
-        labelsList.add("root");
+        if (!labelsList.contains("root"))
+            labelsList.add("root");
         DirectedAcyclicGraph dag = new DirectedAcyclicGraph(labelsList.size());
         for (List<String> pair : parentChildLabelPairs)
             dag.addEdge(labelsList.indexOf(pair.get(1)), labelsList.indexOf(pair.get(0)));
@@ -178,11 +179,14 @@ public class Dataset {
                 List<List<Integer>> allPathsIndices = dag.findAllPaths(i, labelsList.indexOf("root"));
                 for (List<Integer> pathIndices : allPathsIndices) {
                     List<String> path = new ArrayList<>();
-                    for (Integer pathIndex : pathIndices) path.add(labelsList.get(pathIndex));
+                    for (Integer pathIndex : pathIndices)
+                        path.add(labelsList.get(pathIndex));
                     allPaths.add(path);
                 }
                 labelPaths.put(labelsList.get(i), allPaths);
             }
+
+        return labelPaths;
     }
     
     public Map<String, String> pairBasedHierarchyIntoTreePathHierarchy() {

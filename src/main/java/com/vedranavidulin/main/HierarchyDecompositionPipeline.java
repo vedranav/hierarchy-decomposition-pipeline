@@ -29,6 +29,8 @@ import static com.vedranavidulin.evaluation.Evaluation.evaluate;
 import static com.vedranavidulin.main.Settings.errorMsg;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import com.vedranavidulin.data.DatasetFormat;
+import com.vedranavidulin.data.InputFileFormatException;
 import com.vedranavidulin.decomposition.Clus;
 import com.vedranavidulin.decomposition.ClusSettingsFile;
 import com.vedranavidulin.decomposition.CrossValidation;
@@ -67,6 +69,8 @@ public class HierarchyDecompositionPipeline {
         else
             errorMsg("Please provide a settings file or pass settings as arguments");
         checkProperties(prop);
+
+        checkDatasetFormat();
 
         baselineDataset = new Dataset();
         cv = new CrossValidation();
@@ -247,6 +251,23 @@ public class HierarchyDecompositionPipeline {
             settings.setAnnotationsFolder();
             settings.setUnlabelledSet(properties.getProperty("unlabelledSet"));
         }
+    }
+
+    private static void checkDatasetFormat() throws IOException {
+        try {
+            new DatasetFormat(settings.getBaselineDataset()).checkFormat();
+        } catch (InputFileFormatException e) {
+            System.err.println("Error in baseline data set!");
+            errorMsg(e.getMessage());
+        }
+
+        if (settings.getUnlabelledSet() != null)
+            try {
+                new DatasetFormat(settings.getUnlabelledSet()).checkFormat();
+            } catch (InputFileFormatException e) {
+                System.err.println("Error in unlabelled set!");
+                errorMsg(e.getMessage());
+            }
     }
 
     private static void writeTimeToStdoutAndFile(long startTime, String decomposition, boolean crossValidation) throws IOException {
