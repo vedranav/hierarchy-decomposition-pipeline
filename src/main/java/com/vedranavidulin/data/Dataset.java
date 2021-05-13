@@ -48,18 +48,25 @@ public class Dataset {
 
         BufferedReader br = findReaderType(settings.getBaselineDataset());
         String line;
-        while((line=br.readLine()) != null)
-            if (line.toUpperCase().startsWith("@ATTRIBUTE CLASS HIERARCHICAL"))
-                hierarchy = line.substring(line.toUpperCase().indexOf("HIERARCHICAL") + 12).trim();
-            else if (line.toUpperCase().startsWith("@RELATION"))
-                headerSb.append(line).append("\n\n");
-            else if (line.toUpperCase().startsWith("@ATTRIBUTE"))
-                headerSb.append(line).append("\n");
-            else if (!line.startsWith("@") && !line.isEmpty()) {
-                String exampleId = line.substring(0, line.indexOf(","));
-                exampleId2attributeValues.put(exampleId, line.substring(0, line.lastIndexOf(",")));
-                exampleId2labels.put(exampleId, new TreeSet<>(Arrays.asList(line.substring(line.lastIndexOf(",") + 1).trim().split("@"))));
+        while((line=br.readLine()) != null) {
+            line = line.trim();
+            if (!line.startsWith("%")) {
+                if (line.contains("%"))
+                    line = line.substring(0, line.indexOf("%")).trim();
+
+                if (line.toUpperCase().startsWith("@ATTRIBUTE CLASS HIERARCHICAL"))
+                    hierarchy = line.substring(line.toUpperCase().indexOf("HIERARCHICAL") + 12).trim();
+                else if (line.toUpperCase().startsWith("@RELATION"))
+                    headerSb.append(line).append("\n\n");
+                else if (line.toUpperCase().startsWith("@ATTRIBUTE"))
+                    headerSb.append(line).append("\n");
+                else if (!line.startsWith("@") && !line.isEmpty()) {
+                    String exampleId = line.substring(0, line.indexOf(","));
+                    exampleId2attributeValues.put(exampleId, line.substring(0, line.lastIndexOf(",")));
+                    exampleId2labels.put(exampleId, new TreeSet<>(Arrays.asList(line.substring(line.lastIndexOf(",") + 1).trim().split("@"))));
+                }
             }
+        }
         
         header = headerSb.toString();
         collectParent2childrenLabels();
@@ -113,7 +120,7 @@ public class Dataset {
     public boolean isTreeHierarchy() {
         Set<String> children = new HashSet<>();
         for (String pair : hierarchy.split(",")) {
-            String child = pair.substring(pair.indexOf("/") + 1);
+            String child = pair.substring(pair.indexOf("/") + 1).trim();
             if (children.contains(child))
                 return false;
             else
@@ -136,16 +143,19 @@ public class Dataset {
     
     private void collectLabels() {
         labels = new TreeSet<>();
-        for (String pair : hierarchy.split(","))
-            labels.addAll(Arrays.asList(pair.split("/")));
+        for (String pair : hierarchy.split(",")) {
+            String[] labelsArray = pair.split("/");
+            for (String lbl : labelsArray)
+                labels.add(lbl.trim());
+        }
         labels.remove("root");
     }    
     
     private void collectParent2childrenLabels() {
         parent2childrenLabels = new HashMap<>();
         for (String pair : hierarchy.split(",")) {
-            String parent = pair.substring(0, pair.indexOf("/"));
-            String child = pair.substring(pair.indexOf("/") + 1);
+            String parent = pair.substring(0, pair.indexOf("/")).trim();
+            String child = pair.substring(pair.indexOf("/") + 1).trim();
             Set<String> children = new HashSet<>();
             if (parent2childrenLabels.containsKey(parent))
                 children = parent2childrenLabels.get(parent);

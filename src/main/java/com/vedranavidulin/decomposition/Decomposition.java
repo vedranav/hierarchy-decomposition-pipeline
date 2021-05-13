@@ -109,12 +109,17 @@ public class Decomposition {
                         treeHierarchyHeader(baselineDataset.pairBasedHierarchyIntoTreePathHierarchy()) : baselineDataset.getHierarchy()) + "\n");
             bw.write("\n@DATA\n");
 
-            String dummyLabel = baselineDataset.getLabels().iterator().next();
+            String dummyLabel = baselineDataset.isTreeHierarchy() ? baselineDataset.getLabels().iterator().next() : "root";
             BufferedReader br = findReaderType(settings.getUnlabelledSet());
             String line;
-            while((line = br.readLine()) != null)
-                if (!line.startsWith("@") && !line.isEmpty())
+            while((line = br.readLine()) != null) {
+                line = line.trim();
+                if (!line.startsWith("@") && !line.isEmpty() && !line.startsWith("%")) {
+                    if (line.contains("%"))
+                        line = line.substring(0, line.indexOf("%")).trim();
                     bw.write(line.substring(0, line.lastIndexOf(",") + 1) + dummyLabel + "\n");
+                }
+            }
         }
 
         zipFile(outUnlabelledFilePath, outUnlabelledFilePath + ".zip");

@@ -60,7 +60,7 @@ public class HierarchyDecompositionPipelineAnnotationTest {
     }
 
     @Test
-    public void baseline_classifier_has_expected_AUPRC_on_test_set() throws IOException {
+    public void baseline_classifier_has_expected_AUPRC_on_test_set() {
         assertEquals(0.8243f, auprc);
     }
 

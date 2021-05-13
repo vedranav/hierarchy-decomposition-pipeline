@@ -79,7 +79,7 @@ public class DatasetFormatTest {
     }
 
     @BeforeAll
-    public static void createTestFolder() throws IOException {
+    public static void createTestFolder() {
         if (!testFolder.exists() && !testFolder.mkdirs())
             errorMsg("Can't create test folder " + testFolder.getAbsolutePath());
     }
@@ -97,6 +97,21 @@ public class DatasetFormatTest {
         }
 
         assertEquals("FILE-EXT", checkFormat(dataset));
+    }
+
+    @Test
+    public void tab_used_as_a_separator() throws IOException {
+        File dataset = new File(testFolder + "/tab_used_as_a_separator.arff");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
+            bw.write("@RELATION\t\"product categorization\"\n\n");
+            bw.write(exampleIDAttribute());
+            bw.write(attributesDescribingPropertiesOfExamples());
+            bw.write(classAttribute());
+            bw.write("@DATA\n");
+            bw.write(examples());
+        }
+
+        assertEquals("TAB", checkFormat(dataset));
     }
 
     @Test
@@ -192,6 +207,21 @@ public class DatasetFormatTest {
         }
 
         assertEquals("HIE-FORMAT", checkFormat(dataset));
+    }
+
+    @Test
+    public void class_hierarchical_in_capital_letters() throws IOException {
+        File dataset = new File(testFolder + "/class_hierarchical_in_capital_letters.arff");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
+            bw.write(relation());
+            bw.write(exampleIDAttribute());
+            bw.write(attributesDescribingPropertiesOfExamples());
+            bw.write("@ATTRIBUTE class hierarchical root/apparel, apparel/shirts, apparel/trousers, trousers/long, trousers/short, root/footwear, footwear/sneakers, footwear/socks, footwear/sandals\n\n");
+            bw.write("@DATA\n");
+            bw.write(examples());
+        }
+
+        assertEquals("HIE-CAPS", checkFormat(dataset));
     }
 
     @Test
@@ -548,6 +578,26 @@ public class DatasetFormatTest {
         }
 
         assertEquals("DATA-KEYWORD-MISSING", checkFormat(dataset));
+    }
+
+    @Test
+    public void comments() throws IOException {
+        File dataset = new File(testFolder + "/comments.arff");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
+            bw.write("% Test data set\n");
+            bw.write("%Another comment\n");
+            bw.write("@RELATION \"product categorization\" % Attributes:\n\n");
+            bw.write(exampleIDAttribute().trim() + " % Example ID attribute\n");
+            for (String line : attributesDescribingPropertiesOfExamples().split("\n"))
+                bw.write(line + " % Attribute\n");
+            bw.write("@ATTRIBUTE CLASS HIERARCHICAL root/apparel, apparel/shirts, apparel/trousers, trousers/long, trousers/short, root/footwear, footwear/sneakers, footwear/socks, footwear/sandals%Class hierarchy\n\n");
+            bw.write("@DATA%Data section\n");
+            bw.write("% Examples:\n");
+            bw.write(examples());
+            bw.write("  % The end");
+        }
+
+        assertEquals("NO-ERRORS", checkFormat(dataset));
     }
 
     @Test
