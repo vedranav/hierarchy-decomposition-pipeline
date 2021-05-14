@@ -75,20 +75,20 @@ public class CrossValidation {
                     trainingExamples.add(example);
 
             if (decompositionType.equals(decompositions[0])) {
-                decomposition.baseline(trainingExamples, settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Train-fold_" + i + ".arff");
-                decomposition.baseline(testExamples, settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Test-fold_" + i + ".arff");
+                decomposition.baseline(trainingExamples, settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Train-fold_" + i + ".harff");
+                decomposition.baseline(testExamples, settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Test-fold_" + i + ".harff");
             } else if (decompositionType.equals(decompositions[1])) {
-                decomposition.completeDecomposition(trainingExamples, settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Train-fold_" + i + ".arff");
-                decomposition.completeDecomposition(testExamples, settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Test-fold_" + i + ".arff");
+                decomposition.completeDecomposition(trainingExamples, settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Train-fold_" + i + ".harff");
+                decomposition.completeDecomposition(testExamples, settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Test-fold_" + i + ".harff");
             } else if (decompositionType.equals(decompositions[2])) {
-                decomposition.completeDecomposition(trainingExamples, settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Train-fold_" + i + ".arff");
-                decomposition.completeDecomposition(testExamples, settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Test-fold_" + i + ".arff");
+                decomposition.completeDecomposition(trainingExamples, settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Train-fold_" + i + ".harff");
+                decomposition.completeDecomposition(testExamples, settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Test-fold_" + i + ".harff");
             } else if (decompositionType.equals(decompositions[3])) {
-                decomposition.partialDecomposition_ChildVsParentLabel(trainingExamples, false, settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-train-fold_" + i + ".arff");
-                decomposition.partialDecomposition_ChildVsParentLabel(testExamples, true, settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-test-fold_" + i + ".arff");
+                decomposition.partialDecomposition_ChildVsParentLabel(trainingExamples, false, settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-train-fold_" + i + ".harff");
+                decomposition.partialDecomposition_ChildVsParentLabel(testExamples, true, settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-test-fold_" + i + ".harff");
             } else if (decompositionType.equals(decompositions[4])) {
-                decomposition.partialDecomposition_LabelSpecialization(trainingExamples, false, settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-train-fold_" + i + ".arff");
-                decomposition.partialDecomposition_LabelSpecialization(testExamples, true, settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-test-fold_" + i + ".arff");
+                decomposition.partialDecomposition_LabelSpecialization(trainingExamples, false, settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-train-fold_" + i + ".harff");
+                decomposition.partialDecomposition_LabelSpecialization(testExamples, true, settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-test-fold_" + i + ".harff");
             }
         }
     }
@@ -99,31 +99,31 @@ public class CrossValidation {
             if (decompositionType.equals(decompositions[0])) {
                 sFile.baseline(
                         settings.getCrossValidationPath() + decompositions[0] + "/Results/Fold_" + i + ".s",
-                        settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Train-fold_" + i + ".arff.zip",
-                        settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Test-fold_" + i + ".arff.zip",
+                        settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Train-fold_" + i + ".harff.zip",
+                        settings.getCrossValidationPath() + decompositions[0] + "/Dataset/Test-fold_" + i + ".harff.zip",
                         baselineDataset.isTreeHierarchy());
             } else if (decompositionType.equals(decompositions[1])) {
                 sFile.completeDecomposition_LabelsWithoutHierarchicalRelations(
                         settings.getCrossValidationPath() + decompositions[1] + "/Results/Fold_" + i + ".s",
-                        settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Train-fold_" + i + ".arff.zip",
-                        settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Test-fold_" + i + ".arff.zip",
+                        settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Train-fold_" + i + ".harff.zip",
+                        settings.getCrossValidationPath() + decompositions[1] + "/Dataset/Test-fold_" + i + ".harff.zip",
                         baselineDataset.getTheMostSpecificLabels().size());
             } else if (decompositionType.equals(decompositions[2])) {
                 sFile.completeDecomposition_LabelVsTheRest(
                         settings.getCrossValidationPath() + decompositions[2] + "/Results/-fold_" + i + ".s",
-                        settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Train-fold_" + i + ".arff.zip",
-                        settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Test-fold_" + i + ".arff.zip",
+                        settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Train-fold_" + i + ".harff.zip",
+                        settings.getCrossValidationPath() + decompositions[2] + "/Dataset/Test-fold_" + i + ".harff.zip",
                         baselineDataset.getTheMostSpecificLabels());
             } else if (decompositionType.equals(decompositions[3])) {
                 sFile.partialDecomposition_ChildVsParentLabel(
                         settings.getCrossValidationPath() + decompositions[3] + "/Results/-fold_" + i + ".s",
-                        settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-train-fold_" + i + ".arff.zip",
-                        settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-test-fold_" + i + ".arff.zip");
+                        settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-train-fold_" + i + ".harff.zip",
+                        settings.getCrossValidationPath() + decompositions[3] + "/Dataset/-test-fold_" + i + ".harff.zip");
             } else if (decompositionType.equals(decompositions[4])) {
                 sFile.partialDecomposition_LabelSpecialization(
                         settings.getCrossValidationPath() + decompositions[4] + "/Results/-fold_" + i + ".s",
-                        settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-train-fold_" + i + ".arff.zip",
-                        settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-test-fold_" + i + ".arff.zip");
+                        settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-train-fold_" + i + ".harff.zip",
+                        settings.getCrossValidationPath() + decompositions[4] + "/Dataset/-test-fold_" + i + ".harff.zip");
             }
         }
     }

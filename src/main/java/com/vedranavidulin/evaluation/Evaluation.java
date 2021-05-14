@@ -63,7 +63,7 @@ public class Evaluation {
         float microAvgAuprc = new AreaUnderAveragePrecisionRecallCurve().run(exampleLabelConfidence, label2examples, theMostSpecificLabels,
                                     new File(settings.getCrossValidationPath() + decomposition + "/Area_under_average_precision_recall_curve.txt"));
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(settings.getCrossValidationPath() + decomposition + "/Evaluation_report.csv")))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(settings.getCrossValidationPath() + decomposition + "/Evaluation_report.csv"))) {
             SummaryStatistics avgAUPRC = new SummaryStatistics();
             SummaryStatistics avgAUC = new SummaryStatistics();
 

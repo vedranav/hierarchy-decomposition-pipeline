@@ -39,7 +39,7 @@ import static com.vedranavidulin.main.HierarchyDecompositionPipeline.checkProper
 public class Utils {
     public String[] getSettingsForCrossValidation(String tasks, String outputPath) {
         return new String[]{"tasks = " + tasks,
-                            "baselineDataset = " + new File("src/test/resources/enron.arff.zip").getAbsolutePath(),
+                            "baselineDataset = " + new File("src/test/resources/enron.harff.zip").getAbsolutePath(),
                             "outputFolder = " + outputPath,
                             "numFolds = 10",
                             "numTrees = 500",

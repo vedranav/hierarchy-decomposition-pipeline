@@ -180,8 +180,8 @@ public class HierarchyDecompositionPipeline {
         createFolders(decomposition, false);
 
         System.out.println("Preparing data sets");
-        String trainSetPath = settings.getAnnotationsPath() + decomposition + "/Dataset/TrainingSet.arff";
-        String unlabelledSetPath = settings.getAnnotationsPath() + decomposition + "/Dataset/UnlabelledSet.arff";
+        String trainSetPath = settings.getAnnotationsPath() + decomposition + "/Dataset/TrainingSet.harff";
+        String unlabelledSetPath = settings.getAnnotationsPath() + decomposition + "/Dataset/UnlabelledSet.harff";
         new Decomposition().baselineAnnotate(trainSetPath, unlabelledSetPath);
 
         System.out.println("Creating CLUS settings file");
@@ -271,8 +271,16 @@ public class HierarchyDecompositionPipeline {
     }
 
     private static void writeTimeToStdoutAndFile(long startTime, String decomposition, boolean crossValidation) throws IOException {
-        long elapsedTimeInSecond = TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS);
-        writeTime(decomposition, crossValidation, elapsedTimeInSecond);
-        System.out.println("Execution time: " + elapsedTimeInSecond + " sec");
+        String elapsedTime = formatTime(TimeUnit.SECONDS.convert(System.nanoTime() - startTime, TimeUnit.NANOSECONDS));
+        writeTime(decomposition, crossValidation, elapsedTime);
+        System.out.println("Execution time: " + elapsedTime);
+    }
+
+    private static String formatTime(long secondsIn) {
+        long days = TimeUnit.SECONDS.toDays(secondsIn);
+        long hours = TimeUnit.SECONDS.toHours(secondsIn) - (days * 24);
+        long minutes = TimeUnit.SECONDS.toMinutes(secondsIn) - (TimeUnit.SECONDS.toHours(secondsIn) * 60);
+        long secondsOut = TimeUnit.SECONDS.toSeconds(secondsIn) - (TimeUnit.SECONDS.toMinutes(secondsIn) * 60);
+        return (days > 0 ? days + " day(s) " : "") + (hours > 0 ? hours + " hour(s) " : "") + (minutes > 0 ? minutes + " minute(s) " : "") + (secondsOut > 0 ? secondsOut + " second(s)" : "");
     }
 }

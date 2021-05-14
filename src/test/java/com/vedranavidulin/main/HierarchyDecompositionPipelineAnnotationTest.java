@@ -47,9 +47,9 @@ public class HierarchyDecompositionPipelineAnnotationTest {
         if (!testAnnotationFolder.exists() && !testAnnotationFolder.mkdirs())
             errorMsg("Can't create test folder " + testAnnotationFolder.getAbsolutePath());
 
-        String datasetPath = "src/test/resources/enron.arff.zip";
-        String trainingSetPath = "src/test/resources/enron-training_set.arff";
-        String unlabelledSetPath = "src/test/resources/enron-unlabelled_set.arff";
+        String datasetPath = "src/test/resources/enron.harff.zip";
+        String trainingSetPath = "src/test/resources/enron-training_set.harff";
+        String unlabelledSetPath = "src/test/resources/enron-unlabelled_set.harff";
         if (!new File(trainingSetPath + ".zip").exists() || !new File(unlabelledSetPath + ".zip").exists())
             createTrainingAndUnlabelledSets(new File(datasetPath), 70, trainingSetPath, unlabelledSetPath);
 

@@ -101,7 +101,7 @@ public class DatasetFormatTest {
 
     @Test
     public void tab_used_as_a_separator() throws IOException {
-        File dataset = new File(testFolder + "/tab_used_as_a_separator.arff");
+        File dataset = new File(testFolder + "/tab_used_as_a_separator.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write("@RELATION\t\"product categorization\"\n\n");
             bw.write(exampleIDAttribute());
@@ -116,7 +116,7 @@ public class DatasetFormatTest {
 
     @Test
     public void relation_is_not_in_the_first_line() throws IOException {
-        File dataset = new File(testFolder + "/relation_is_not_in_the_first_line.arff");
+        File dataset = new File(testFolder + "/relation_is_not_in_the_first_line.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(exampleIDAttribute());
             bw.write(attributesDescribingPropertiesOfExamples());
@@ -130,7 +130,7 @@ public class DatasetFormatTest {
 
     @Test
     public void dataset_name_containing_spaces_is_not_quoted() throws IOException {
-        File dataset = new File(testFolder + "/dataset_name_containing_spaces_is_not_quoted.arff");
+        File dataset = new File(testFolder + "/dataset_name_containing_spaces_is_not_quoted.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write("@RELATION product categorization\n\n");
             bw.write(exampleIDAttribute());
@@ -145,7 +145,7 @@ public class DatasetFormatTest {
 
     @Test
     public void attribute_type_is_neither_numeric_nor_nominal() throws IOException {
-        File dataset = new File(testFolder + "/attribute_type_is_neither_numeric_nor_nominal.arff");
+        File dataset = new File(testFolder + "/attribute_type_is_neither_numeric_nor_nominal.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -166,7 +166,7 @@ public class DatasetFormatTest {
 
     @Test
     public void attribute_name_containing_spaces_is_not_quoted() throws IOException {
-        File dataset = new File(testFolder + "/attribute_name_containing_spaces_is_not_quoted.arff");
+        File dataset = new File(testFolder + "/attribute_name_containing_spaces_is_not_quoted.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write("@ATTRIBUTE Example ID string\n");
@@ -181,7 +181,7 @@ public class DatasetFormatTest {
 
     @Test
     public void example_ID_attribute_is_not_the_first_attribute() throws IOException {
-        File dataset = new File(testFolder + "/example_ID_attribute_is_not_the_first_attribute.arff");
+        File dataset = new File(testFolder + "/example_ID_attribute_is_not_the_first_attribute.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(attributesDescribingPropertiesOfExamples());
@@ -196,7 +196,7 @@ public class DatasetFormatTest {
 
     @Test
     public void hierarchy_format_less_than_three_elements() throws IOException {
-        File dataset = new File(testFolder + "/hierarchy_format_less_than_three_elements.arff");
+        File dataset = new File(testFolder + "/hierarchy_format_less_than_three_elements.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -210,23 +210,8 @@ public class DatasetFormatTest {
     }
 
     @Test
-    public void class_hierarchical_in_capital_letters() throws IOException {
-        File dataset = new File(testFolder + "/class_hierarchical_in_capital_letters.arff");
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
-            bw.write(relation());
-            bw.write(exampleIDAttribute());
-            bw.write(attributesDescribingPropertiesOfExamples());
-            bw.write("@ATTRIBUTE class hierarchical root/apparel, apparel/shirts, apparel/trousers, trousers/long, trousers/short, root/footwear, footwear/sneakers, footwear/socks, footwear/sandals\n\n");
-            bw.write("@DATA\n");
-            bw.write(examples());
-        }
-
-        assertEquals("HIE-CAPS", checkFormat(dataset));
-    }
-
-    @Test
     public void incorrectly_defined_parent_child_pairs() throws IOException {
-        File dataset = new File(testFolder + "/incorrectly_defined_parent_child_pairs.arff");
+        File dataset = new File(testFolder + "/incorrectly_defined_parent_child_pairs.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -241,7 +226,7 @@ public class DatasetFormatTest {
 
     @Test
     public void root_is_not_in_the_list_of_parent_child_pairs() throws IOException {
-        File dataset = new File(testFolder + "/root_is_not_in_the_list_of_parent_child_pairs.arff");
+        File dataset = new File(testFolder + "/root_is_not_in_the_list_of_parent_child_pairs.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -256,7 +241,7 @@ public class DatasetFormatTest {
 
     @Test
     public void labels_contain_characters_other_than_alphanumeric() throws IOException {
-        File dataset = new File(testFolder + "/labels_contain_characters_other_than_alphanumeric.arff");
+        File dataset = new File(testFolder + "/labels_contain_characters_other_than_alphanumeric.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -271,7 +256,7 @@ public class DatasetFormatTest {
 
     @Test
     public void path_does_not_reach_the_root_of_hierarchy() throws IOException {
-        File dataset = new File(testFolder + "/path_does_not_reach_the_root_of_hierarchy.arff");
+        File dataset = new File(testFolder + "/path_does_not_reach_the_root_of_hierarchy.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -286,7 +271,7 @@ public class DatasetFormatTest {
 
     @Test
     public void class_hierarchy_attribute_is_not_the_last_attribute() throws IOException {
-        File dataset = new File(testFolder + "/class_hierarchy_attribute_is_not_the_last_attribute.arff");
+        File dataset = new File(testFolder + "/class_hierarchy_attribute_is_not_the_last_attribute.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -301,7 +286,7 @@ public class DatasetFormatTest {
 
     @Test
     public void missing_attributes_that_describe_properties_of_examples() throws IOException {
-        File dataset = new File(testFolder + "/missing_attributes_that_describe_properties_of_examples.arff");
+        File dataset = new File(testFolder + "/missing_attributes_that_describe_properties_of_examples.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -315,7 +300,7 @@ public class DatasetFormatTest {
 
     @Test
     public void duplicate_attribute_name() throws IOException {
-        File dataset = new File(testFolder + "/duplicate_attribute_name.arff");
+        File dataset = new File(testFolder + "/duplicate_attribute_name.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -337,7 +322,7 @@ public class DatasetFormatTest {
 
     @Test
     public void number_of_attributes_in_example_and_header_do_not_match() throws IOException {
-        File dataset = new File(testFolder + "/number_of_attributes_in_example_and_header_do_not_match.arff");
+        File dataset = new File(testFolder + "/number_of_attributes_in_example_and_header_do_not_match.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -358,7 +343,7 @@ public class DatasetFormatTest {
 
     @Test
     public void example_ID_attribute_value_is_missing() throws IOException {
-        File dataset = new File(testFolder + "/example_ID_attribute_value_is_missing.arff");
+        File dataset = new File(testFolder + "/example_ID_attribute_value_is_missing.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -379,7 +364,7 @@ public class DatasetFormatTest {
 
     @Test
     public void class_attribute_value_is_missing() throws IOException {
-        File dataset = new File(testFolder + "/class_attribute_value_is_missing.arff");
+        File dataset = new File(testFolder + "/class_attribute_value_is_missing.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -400,7 +385,7 @@ public class DatasetFormatTest {
 
     @Test
     public void duplicate_example_ID() throws IOException {
-        File dataset = new File(testFolder + "/duplicate_example_ID.arff");
+        File dataset = new File(testFolder + "/duplicate_example_ID.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -421,7 +406,7 @@ public class DatasetFormatTest {
 
     @Test
     public void numeric_attribute_has_non_numeric_value() throws IOException {
-        File dataset = new File(testFolder + "/numeric_attribute_has_non_numeric_value.arff");
+        File dataset = new File(testFolder + "/numeric_attribute_has_non_numeric_value.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -442,7 +427,7 @@ public class DatasetFormatTest {
 
     @Test
     public void nominal_attribute_has_non_nominal_value() throws IOException {
-        File dataset = new File(testFolder + "/nominal_attribute_has_non_nominal_value.arff");
+        File dataset = new File(testFolder + "/nominal_attribute_has_non_nominal_value.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -463,7 +448,7 @@ public class DatasetFormatTest {
 
     @Test
     public void all_attribute_values_are_missing() throws IOException {
-        File dataset = new File(testFolder + "/all_attribute_values_are_missing.arff");
+        File dataset = new File(testFolder + "/all_attribute_values_are_missing.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -484,7 +469,7 @@ public class DatasetFormatTest {
 
     @Test
     public void labels_are_incorrectly_formatted() throws IOException {
-        File dataset = new File(testFolder + "/labels_are_incorrectly_formatted.arff");
+        File dataset = new File(testFolder + "/labels_are_incorrectly_formatted.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -505,7 +490,7 @@ public class DatasetFormatTest {
 
     @Test
     public void label_not_defined_in_header() throws IOException {
-        File dataset = new File(testFolder + "/label_not_defined_in_header.arff");
+        File dataset = new File(testFolder + "/label_not_defined_in_header.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -526,7 +511,7 @@ public class DatasetFormatTest {
 
     @Test
     public void example_labeled_with_invalid_path() throws IOException {
-        File dataset = new File(testFolder + "/example_labeled_with_invalid_path.arff");
+        File dataset = new File(testFolder + "/example_labeled_with_invalid_path.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -547,7 +532,7 @@ public class DatasetFormatTest {
 
     @Test
     public void label_defined_in_header_but_not_associated_with_any_of_the_examples() throws IOException {
-        File dataset = new File(testFolder + "/label_defined_in_header_but_not_associated_with_any_of_the_examples.arff");
+        File dataset = new File(testFolder + "/label_defined_in_header_but_not_associated_with_any_of_the_examples.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -568,7 +553,7 @@ public class DatasetFormatTest {
 
     @Test
     public void data_keyword_missing_in_the_data_set() throws IOException {
-        File dataset = new File(testFolder + "/data_keyword_missing_in_the_data_set.arff");
+        File dataset = new File(testFolder + "/data_keyword_missing_in_the_data_set.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());
@@ -582,7 +567,7 @@ public class DatasetFormatTest {
 
     @Test
     public void comments() throws IOException {
-        File dataset = new File(testFolder + "/comments.arff");
+        File dataset = new File(testFolder + "/comments.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write("% Test data set\n");
             bw.write("%Another comment\n");
@@ -602,7 +587,7 @@ public class DatasetFormatTest {
 
     @Test
     public void no_errors() throws IOException {
-        File dataset = new File(testFolder + "/no_errors.arff");
+        File dataset = new File(testFolder + "/no_errors.harff");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(dataset))) {
             bw.write(relation());
             bw.write(exampleIDAttribute());

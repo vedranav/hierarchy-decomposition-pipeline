@@ -104,9 +104,9 @@ public class DataReadWrite {
         }
     }
     
-    public static void writeTime(String decomposition, boolean crossValidation, long time) throws IOException {
+    public static void writeTime(String decomposition, boolean crossValidation, String time) throws IOException {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter((crossValidation ? settings.getCrossValidationPath() : settings.getAnnotationsPath()) + decomposition + "/Execution_time.txt"))) {
-            bw.write(time + " sec\n");
+            bw.write(time + "\n");
         }
     }
     

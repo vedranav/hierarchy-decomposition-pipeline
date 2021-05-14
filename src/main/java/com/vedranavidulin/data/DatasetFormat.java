@@ -41,8 +41,8 @@ public class DatasetFormat {
     }
 
     public void checkFormat() throws IOException, InputFileFormatException {
-        if (!dataset.getName().toLowerCase().endsWith(".arff") && !dataset.getName().toLowerCase().endsWith(".arff.zip"))
-            throw new InputFileFormatException("FILE-EXT", "Data set file extension must be “.arff” or “.arff.zip” in case that the file is compressed");
+        if (!dataset.getName().toLowerCase().endsWith(".harff") && !dataset.getName().toLowerCase().endsWith(".harff.zip"))
+            throw new InputFileFormatException("FILE-EXT", "Data set file extension must be “.harff” or “.harff.zip” in case that the file is compressed");
 
         Map<String, List<List<String>>> labelPaths = new HashMap<>();
 
@@ -122,9 +122,6 @@ public class DatasetFormat {
                     throw new InputFileFormatException("EX-ID-FIRST", "The first attribute in the data set must contain Example ID attribute, defined as @ATTRIBUTE [name] string");
 
                 if (line.toUpperCase().startsWith("@ATTRIBUTE CLASS HIERARCHICAL")) {
-                    if (!line.substring(line.toUpperCase().indexOf("CLASS"), line.toUpperCase().indexOf("HIERARCHICAL") + 12).matches("[A-Z ]+"))
-                        throw new InputFileFormatException("HIE-CAPS", "CLASS HIERARCHICAL keywords in class hierarchy definition must be written in capital letters");
-
                     String[] pairs = line.substring(line.indexOf("HIERARCHICAL") + 12).trim().split(",");
 
                     String hieFormatMsg = "Class hierarchy must be defined by enumerating all parent-child pairs in the hierarchy";
