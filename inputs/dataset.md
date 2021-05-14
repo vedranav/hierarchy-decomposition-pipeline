@@ -63,14 +63,11 @@ Next is an ordered sequence of attributes, each marked by the @ATTRIBUTE keyword
 
 2. **Attributes that describe properties of examples** are defined as @ATTRIBUTE [name] [type]. Select a name that best describes a property, like has_sleeves. Quote when name contains spaces. An attribute can be one of the two types:
     - **Numeric** when a property is represented with an integer or real number. The type is "numeric".
-
-```
-        @ATTRIBUTE length_cm numeric
-```
-
     - **Nominal** when a property can take one of the predefined values. The type enumerates values within curly brackets.
 
 ```
+        @ATTRIBUTE length_cm numeric
+        
         @ATTRIBUTE most_represented_material {cotton, linen, elastane, polyester, leather, rubber, textile, plastic}
 ```
 
