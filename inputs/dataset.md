@@ -55,23 +55,23 @@ Header begins with the @RELATION keyword followed by a name of a data set. Quote
 
 Next is an ordered sequence of attributes, each marked by the @ATTRIBUTE keyword. There are three categories of attributes:
 
-1. **Example ID** is a unique identifier of examples. It is the first attribute in a data set defined as @ATTRIBUTE [name] string. Name can be ID or any other that best describes ID of your choice. For example, if examples are genes, you can use their unique identifiers. In case that examples don't have unique IDs, use an iterator. ID attribute is a type of "string".
+- **Example ID** is a unique identifier of examples. It is the first attribute in a data set defined as @ATTRIBUTE [name] string. Name can be ID or any other that best describes ID of your choice. For example, if examples are genes, you can use their unique identifiers. In case that examples don't have unique IDs, use an iterator. ID attribute is a type of "string".
 
 ```
     @ATTRIBUTE ID string
 ```
 
-2. **Attributes that describe properties of examples** are defined as @ATTRIBUTE [name] [type]. Select a name that best describes a property, like has_sleeves. Quote when name contains spaces. An attribute can be one of the two types:
+- **Attributes that describe properties of examples** are defined as @ATTRIBUTE [name] [type]. Select a name that best describes a property, like has_sleeves. Quote when name contains spaces. An attribute can be one of the two types:
     - **Numeric** when a property is represented with an integer or real number. The type is "numeric".
     - **Nominal** when a property can take one of the predefined values. The type enumerates values within curly brackets.
 
 ```
         @ATTRIBUTE length_cm numeric
-        
+
         @ATTRIBUTE most_represented_material {cotton, linen, elastane, polyester, leather, rubber, textile, plastic}
 ```
 
-3. **Class attribute** contains class hierarchy. It is the last attribute in a data set defined as @ATTRIBUTE CLASS HIERARCHICAL [class hierarchy]. Class hierarchy is described with parent-child pairs of labels. For example, shirts and trousers are apparel, which is described as "apparel/shirts" and "apparel/trousers". When a parent is a root of hierarchy, then the keyword "root" is used. For example, "root/apparel" and "root/footwear". All pairs of labels from the class hierarchy must be enumerated. Labels can contain only alphanumeric characters and dots.
+- **Class attribute** contains class hierarchy. It is the last attribute in a data set defined as @ATTRIBUTE CLASS HIERARCHICAL [class hierarchy]. Class hierarchy is described with parent-child pairs of labels. For example, shirts and trousers are apparel, which is described as "apparel/shirts" and "apparel/trousers". When a parent is a root of hierarchy, then the keyword "root" is used. For example, "root/apparel" and "root/footwear". All pairs of labels from the class hierarchy must be enumerated. Labels can contain only alphanumeric characters and dots.
 
 ```
     @ATTRIBUTE CLASS HIERARCHICAL root/apparel, apparel/shirts, apparel/trousers, trousers/long, trousers/short, root/footwear, footwear/sneakers, footwear/socks, footwear/sandals
