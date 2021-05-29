@@ -65,6 +65,19 @@ public class Utils {
                             "numProcessors = 4"};
     }
 
+    public String[] getSettingsForDatasetPropertiesBaseline(String baselineDatasetPath, String outputPath) {
+        return new String[]{"tasks = 8",
+                            "baselineDataset = " + new File(baselineDatasetPath).getAbsolutePath(),
+                            "outputFolder = " + outputPath};
+    }
+
+    public String[] getSettingsForDatasetPropertiesBaselineAndUnlabelled(String trainingSetPath, String unlabelledSetPath, String outputPath) {
+        return new String[]{"tasks = 8",
+                            "baselineDataset = " + new File(trainingSetPath).getAbsolutePath(),
+                            "unlabelledSet = " + new File(unlabelledSetPath).getAbsolutePath(),
+                            "outputFolder = " + outputPath};
+    }
+
     public Table<String, String, Float> loadExampleLabelConfidence(File tableFile) throws IOException {
         List<String> examples = new ArrayList<>();
         List<String> labels = new ArrayList<>();

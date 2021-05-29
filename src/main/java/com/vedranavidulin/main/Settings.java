@@ -70,6 +70,8 @@ public class Settings {
             outputPath += "/";
     }
 
+    public String getOutputPath() { return outputPath; }
+
     public void setCrossValidationFolder() {
         crossValidationPath = outputPath + "cross-validation/";
         File crossValidationFolder = new File(crossValidationPath);

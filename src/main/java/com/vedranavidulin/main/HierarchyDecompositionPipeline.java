@@ -30,6 +30,7 @@ import static com.vedranavidulin.main.Settings.errorMsg;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import com.vedranavidulin.data.DatasetFormat;
+import com.vedranavidulin.data.DatasetProperties;
 import com.vedranavidulin.data.InputFileFormatException;
 import com.vedranavidulin.decomposition.Clus;
 import com.vedranavidulin.decomposition.ClusSettingsFile;
@@ -149,6 +150,15 @@ public class HierarchyDecompositionPipeline {
             annotate(decompositions[0]);
         }
 
+        //(8)
+        if (tasks.contains(8)) {
+            System.out.println("\n#################################################################");
+            System.out.println("Data set properties");
+            System.out.println("#################################################################");
+            System.out.println("Computing data set properties");
+            new DatasetProperties().extractDatasetStatistics(settings.getBaselineDataset(), settings.getUnlabelledSet(), new File(settings.getOutputPath() + "Dataset_properties.txt"));
+        }
+
         if (clusFile.exists()) clusFile.delete();
     }
     
@@ -201,7 +211,7 @@ public class HierarchyDecompositionPipeline {
 
         writeTimeToStdoutAndFile(startTime, decomposition, false);
     }
-    
+
     public static void checkProperties(Properties properties) {
         Set<String> propNames = properties.stringPropertyNames();
         if (!propNames.contains("tasks")) errorMsg("Settings don't contain the required property \"tasks\"");
@@ -223,20 +233,24 @@ public class HierarchyDecompositionPipeline {
             if (tasks.stream().anyMatch(task -> task >= 2 && task <= 6) && !tasks.contains(1) && !new File(properties.getProperty("outputFolder") + "/cross-validation/exampleId2fold.txt").exists())
                 errorMsg("Cross-validation can't be performed before dividing examples into folds. Add task 1 to the list of tasks.");
 
-            tasks.forEach(task -> {if (task < 1 || task > 7) errorMsg("Tasks range from 1 to 7");});
+            tasks.forEach(task -> {if (task < 1 || task > 8) errorMsg("Tasks range from 1 to 8");});
         } catch (NumberFormatException nfe) { errorMsg("Tasks should be correctly specified in settings"); }
 
-        String[] requiredProperties = {"baselineDataset", "outputFolder", "numTrees", "Xmx", "numProcessors"};
+        String[] requiredProperties = {"baselineDataset", "outputFolder"};
+        String[] machineLearningProperties = {"numTrees", "Xmx", "numProcessors"};
         String[] crossValidationProperties = {"numFolds", "labelSubset", "thresholds"};
         String[] annotationProperties = {"unlabelledSet"};
 
         Arrays.asList(requiredProperties).forEach(rp -> {if (!propNames.contains(rp)) errorMsg("Settings don't contain the required property \"" + rp + "\"");});
-
         settings.setBaselineDataset(properties.getProperty("baselineDataset"));
         settings.setOutputFolder(properties.getProperty("outputFolder"));
-        settings.setNumTrees(properties.getProperty("numTrees"));
-        settings.setXmx(properties.getProperty("Xmx"));
-        settings.setNumProcessors(properties.getProperty("numProcessors"));
+
+        if (tasks.stream().anyMatch(task -> task >= 1 && task <= 7)) {
+            Arrays.asList(machineLearningProperties).forEach(rp -> { if (!propNames.contains(rp)) errorMsg("Settings don't contain the required property \"" + rp + "\""); });
+            settings.setNumTrees(properties.getProperty("numTrees"));
+            settings.setXmx(properties.getProperty("Xmx"));
+            settings.setNumProcessors(properties.getProperty("numProcessors"));
+        }
 
         if (tasks.stream().anyMatch(task -> task >= 1 && task <= 6)) {
             Arrays.asList(crossValidationProperties).forEach(cvp -> {if (!propNames.contains(cvp)) errorMsg("Settings don't contain the required property \"" + cvp + "\"");});
@@ -251,6 +265,9 @@ public class HierarchyDecompositionPipeline {
             settings.setAnnotationsFolder();
             settings.setUnlabelledSet(properties.getProperty("unlabelledSet"));
         }
+
+        if (tasks.contains(8) && properties.getProperty("unlabelledSet") != null)
+            settings.setUnlabelledSet(properties.getProperty("unlabelledSet"));
     }
 
     private static void checkDatasetFormat() throws IOException {
