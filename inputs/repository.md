@@ -46,6 +46,8 @@ Data sets are in [HARFF format](https://vedranav.github.io/hierarchy-decompositi
 | Enron             | 53                   | 2.87                   | 3.37                       |
 | Phyletic profiles | 947                  | 2.59                   | 16.67                      |
 
+**Annotation** is an association between a label and an example.
+
 Annotation-related data set properties are best explained with an example. Suppose that we have the following class hierarchy:
 
 ```mermaid
@@ -70,7 +72,8 @@ and a data set composed of five examples annotated in the following manner:
 | 4               | <i class="fa fa-check"></i> | <i class="fa fa-check"></i> | <i class="fa fa-check"></i> || <i class="fa fa-check"></i> ||||
 | 5               |||||| <i class="fa fa-check"></i> | <i class="fa fa-check"></i> ||
 
-The set of **most specific labels** is obtained by collecting the most specific labels in paths associated with examples, which in our example are:
+The number of **most specific labels** is obtained by:
+- collecting the most specific annotations for each example, which are:
 
 | Example / Label |  1  | 1.1 | 1.1.1 | 1.1.2 | 1.2 |  2  | 2.1 | 2.2 |
 | --------------: | :-: | :-: | :---: | :---: | :-: | :-: | :-: | :-: |
@@ -80,13 +83,13 @@ The set of **most specific labels** is obtained by collecting the most specific 
 | 4               ||| <i class="fa fa-check"></i> || <i class="fa fa-check"></i> ||||
 | 5               ||||||| <i class="fa fa-check"></i> ||
 
-Six labels belong to the set of most specific labels, all except 1 and 2.
+- counting the number of distinct labels among the annotations (six labels; all except 1 and 2).
 
-**Cardinality** is an average number of labels per example.
+**Cardinality** is an average number of annotations per example.
 
-**Cardinality - complete** indicates the amount of labels available to the complete hierarchy decomposition algorithms. These algorithms ignore hierarchy over labels. In our example, the algorithms would construct model(s) from the second table. Consequently, they would have 1.2 labels available per example and would not construct model(s) for labels 1 and 2.
+**Cardinality - complete** indicates the amount of annotations available to the complete hierarchy decomposition algorithms. These algorithms ignore hierarchy over labels. In our example, the algorithms would construct model(s) from the second table. Consequently, they would have 1.2 annotation available per example and would not construct model(s) for labels 1 and 2.
 
-**Cardinality - hierarchical** indicates the amount of most specific labels available to the hierarchical algorithms (baseline and partial hierarchy decomposition algorithms). These algorithms construct model(s) from the complete set of labels (the first table). Their performance, however, is evaluated on the set of most specific labels common to the complete decomposition algorithms (six most specific labels). Nevertheless, hierarchical algorithms have access to more label assignments (cardinality of 1.6) than the complete decomposition algorithms (cardinality 1.2) simply because they account for hierarchy over labels (the third table).
+**Cardinality - hierarchical** indicates the amount of annotations available to the hierarchical algorithms (baseline and partial hierarchy decomposition algorithms) when only most specific labels are taken into account. These algorithms construct model(s) from the complete set of labels (the first table). Their performance, however, is evaluated on the set of most specific labels common to the complete decomposition algorithms (six most specific labels). Nevertheless, hierarchical algorithms have access to more annotations (cardinality of 1.6) than the complete decomposition algorithms (cardinality 1.2) simply because they account for hierarchy over labels (the third table).
 
 | Example / Label |  1  | 1.1 | 1.1.1 | 1.1.2 | 1.2 |  2  | 2.1 | 2.2 |
 | --------------: | :-: | :-: | :---: | :---: | :-: | :-: | :-: | :-: |
