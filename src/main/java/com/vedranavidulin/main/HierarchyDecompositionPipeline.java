@@ -52,7 +52,7 @@ public class HierarchyDecompositionPipeline {
     private static Clus clus;
     
     private static Map<String, Integer> exampleId2fold;
-    private static Set<Integer> tasks;
+    public static Set<Integer> tools;
 
     public static void main(String[] args) throws Exception {
         runPipeline(args);
@@ -80,7 +80,7 @@ public class HierarchyDecompositionPipeline {
         exampleId2fold = new HashMap<>();
 
         File clusFile = new File(System.getProperty("user.dir") + "/clus.jar");
-        if (tasks.stream().anyMatch(task -> task > 1))
+        if (tools.stream().anyMatch(tool -> tool > 1))
             try {
                 FileUtils.copyInputStreamToFile(HierarchyDecompositionPipeline.class.getClassLoader().getResourceAsStream("libs/clus.jar"),
                                                 new File(System.getProperty("user.dir") + "/clus.jar"));
@@ -88,18 +88,18 @@ public class HierarchyDecompositionPipeline {
 
         //(1)
         //PERFORM N-FOLD CROSS-VALIDATION
-        if (tasks.contains(1)) {
+        if (tools.contains(1)) {
             System.out.println("Dividing examples into " + settings.getNumFolds() + " folds");
             exampleId2fold = cv.divideExamplesIntoFolds();
-        } else if (tasks.stream().anyMatch(task -> task < 7)) {
+        } else if (tools.stream().anyMatch(tool -> tool < 7)) {
              if (!settings.getExampleId2foldFile().exists())
-                errorMsg("Cross-validation can't be performed before dividing examples into folds. Add task 1 to the list of tasks.");
+                errorMsg("Cross-validation can't be performed before dividing examples into folds. Add tool 1 to the list of tools.");
             exampleId2fold = cv.loadExampleId2fold(settings.getExampleId2foldFile());
         }
         
         //(2)
         //BASELINE
-        if (tasks.contains(2)) {
+        if (tools.contains(2)) {
             System.out.println("\n#################################################################");
             System.out.println("Baseline data set");
             System.out.println("#################################################################");
@@ -108,7 +108,7 @@ public class HierarchyDecompositionPipeline {
         
         //(3)
         //COMPLETE DECOMPOSITION: LABELS WITHOUT HIERARCHICAL RELATIONS
-        if (tasks.contains(3)) {
+        if (tools.contains(3)) {
             System.out.println("\n#################################################################");
             System.out.println("Complete decomposition - Labels without hierarchical relations");
             System.out.println("#################################################################");
@@ -117,7 +117,7 @@ public class HierarchyDecompositionPipeline {
         
         //(4)
         //COMPLETE DECOMPOSITION: LABEL VS. THE REST
-        if (tasks.contains(4)) {
+        if (tools.contains(4)) {
             System.out.println("\n#################################################################");
             System.out.println("Complete decomposition - Label vs. the rest");
             System.out.println("#################################################################");
@@ -126,7 +126,7 @@ public class HierarchyDecompositionPipeline {
         
         //(5)
         //PARTIAL DECOMPOSITION: CHILD VS. PARENT LABEL
-        if (tasks.contains(5)) {
+        if (tools.contains(5)) {
             System.out.println("\n#################################################################");
             System.out.println("Partial decomposition - Child vs. parent label");
             System.out.println("#################################################################");
@@ -135,7 +135,7 @@ public class HierarchyDecompositionPipeline {
         
         //(6)
         //PARTIAL DECOMPOSITION: LABEL SPECIALIZATION
-        if (tasks.contains(6)) {
+        if (tools.contains(6)) {
             System.out.println("\n#################################################################");
             System.out.println("Partial decomposition - Label specialization");
             System.out.println("#################################################################");
@@ -143,7 +143,7 @@ public class HierarchyDecompositionPipeline {
         }
 
         //(7)
-        if (tasks.contains(7)) {
+        if (tools.contains(7)) {
             System.out.println("\n#################################################################");
             System.out.println("Annotate unlabelled examples - Baseline");
             System.out.println("#################################################################");
@@ -151,7 +151,7 @@ public class HierarchyDecompositionPipeline {
         }
 
         //(8)
-        if (tasks.contains(8)) {
+        if (tools.contains(8)) {
             System.out.println("\n#################################################################");
             System.out.println("Data set properties");
             System.out.println("#################################################################");
@@ -182,6 +182,7 @@ public class HierarchyDecompositionPipeline {
         removeResults(decomposition, true);
         removeHierarchyFiles();
 
+        settings.writeSettingsToFile(decomposition, true);
         writeTimeToStdoutAndFile(startTime, decomposition, true);
     }
 
@@ -209,65 +210,62 @@ public class HierarchyDecompositionPipeline {
         removeResults(decomposition, false);
         removeHierarchyFiles();
 
+        settings.writeSettingsToFile(decomposition, false);
         writeTimeToStdoutAndFile(startTime, decomposition, false);
     }
 
     public static void checkProperties(Properties properties) {
         Set<String> propNames = properties.stringPropertyNames();
-        if (!propNames.contains("tasks")) errorMsg("Settings don't contain the required property \"tasks\"");
+        if (!propNames.contains("tools")) errorMsg("Settings don't contain the required property \"tools\"");
 
-        String[] taskArray = properties.getProperty("tasks").split(",");
-        tasks = new HashSet<>();
+        String[] toolArray = properties.getProperty("tools").split(",");
+        tools = new HashSet<>();
         try {
-            for (String task : taskArray) {
-                task = task.trim();
-                if (task.contains("-")) {
-                    int lowerBound = Integer.parseInt(task.substring(0, task.indexOf("-")));
-                    int upperBound = Integer.parseInt(task.substring(task.indexOf("-") + 1));
+            for (String tool : toolArray) {
+                tool = tool.trim();
+                if (tool.contains("-")) {
+                    int lowerBound = Integer.parseInt(tool.substring(0, tool.indexOf("-")));
+                    int upperBound = Integer.parseInt(tool.substring(tool.indexOf("-") + 1));
                     for (int i = lowerBound; i <= upperBound; i++)
-                        tasks.add(i);
+                        tools.add(i);
                 } else
-                    tasks.add(Integer.parseInt(task));
+                    tools.add(Integer.parseInt(tool));
             }
 
-            if (tasks.stream().anyMatch(task -> task >= 2 && task <= 6) && !tasks.contains(1) && !new File(properties.getProperty("outputFolder") + "/cross-validation/exampleId2fold.txt").exists())
-                errorMsg("Cross-validation can't be performed before dividing examples into folds. Add task 1 to the list of tasks.");
+            if (tools.stream().anyMatch(tool -> tool >= 2 && tool <= 6) && !tools.contains(1) && !new File(properties.getProperty("outputFolder") + "/cross-validation/exampleId2fold.txt").exists())
+                errorMsg("Cross-validation can't be performed before dividing examples into folds. Add tool 1 to the list of tools.");
 
-            tasks.forEach(task -> {if (task < 1 || task > 8) errorMsg("Tasks range from 1 to 8");});
-        } catch (NumberFormatException nfe) { errorMsg("Tasks should be correctly specified in settings"); }
+            tools.forEach(tool -> {if (tool < 1 || tool > 8) errorMsg("Tools range from 1 to 8");});
+        } catch (NumberFormatException nfe) { errorMsg("Tools should be correctly specified in settings"); }
 
         String[] requiredProperties = {"baselineDataset", "outputFolder"};
-        String[] machineLearningProperties = {"numTrees", "Xmx", "numProcessors"};
-        String[] crossValidationProperties = {"numFolds", "labelSubset", "thresholds"};
+        String[] machineLearningProperties = {"numTrees", "memory", "numProcessors"};
+        String[] crossValidationProperties = {"numFolds", "thresholds", "labelSubset"};
         String[] annotationProperties = {"unlabelledSet"};
 
         Arrays.asList(requiredProperties).forEach(rp -> {if (!propNames.contains(rp)) errorMsg("Settings don't contain the required property \"" + rp + "\"");});
-        settings.setBaselineDataset(properties.getProperty("baselineDataset"));
-        settings.setOutputFolder(properties.getProperty("outputFolder"));
+        settings.setBaselineDataset(properties.getProperty(requiredProperties[0]));
+        settings.setOutputFolder(properties.getProperty(requiredProperties[1]));
 
-        if (tasks.stream().anyMatch(task -> task >= 1 && task <= 7)) {
-            Arrays.asList(machineLearningProperties).forEach(rp -> { if (!propNames.contains(rp)) errorMsg("Settings don't contain the required property \"" + rp + "\""); });
-            settings.setNumTrees(properties.getProperty("numTrees"));
-            settings.setXmx(properties.getProperty("Xmx"));
-            settings.setNumProcessors(properties.getProperty("numProcessors"));
-        }
+        settings.setNumTrees(propNames.contains(machineLearningProperties[0]) ? properties.getProperty(machineLearningProperties[0]) : "500");
+        settings.setMemory(propNames.contains(machineLearningProperties[1]) ? properties.getProperty(machineLearningProperties[1]) : "2g");
+        settings.setNumProcessors(propNames.contains(machineLearningProperties[2]) ? properties.getProperty(machineLearningProperties[2]) : "2");
 
-        if (tasks.stream().anyMatch(task -> task >= 1 && task <= 6)) {
-            Arrays.asList(crossValidationProperties).forEach(cvp -> {if (!propNames.contains(cvp)) errorMsg("Settings don't contain the required property \"" + cvp + "\"");});
+        settings.setNumFolds(propNames.contains(crossValidationProperties[0]) ? properties.getProperty(crossValidationProperties[0]) : "10");
+        settings.setThresholds(propNames.contains(crossValidationProperties[1]) ? properties.getProperty(crossValidationProperties[1]) : "0.5, 0.7, 0.9");
+        settings.setLabelSubset(propNames.contains(crossValidationProperties[2]) ? properties.getProperty(crossValidationProperties[2]) : "mostSpecific");
+
+        if (tools.stream().anyMatch(tool -> tool >= 1 && tool <= 6))
             settings.setCrossValidationFolder();
-            settings.setNumFolds(properties.getProperty("numFolds"));
-            settings.setLabelSubset(properties.getProperty("labelSubset"));
-            settings.setThresholds(properties.getProperty("thresholds"));
-        }
 
-        if (tasks.contains(7)) {
+        if (tools.contains(7)) {
             Arrays.asList(annotationProperties).forEach(ap -> {if (!propNames.contains(ap)) errorMsg("Settings don't contain the required property \"" + ap + "\"");});
             settings.setAnnotationsFolder();
-            settings.setUnlabelledSet(properties.getProperty("unlabelledSet"));
+            settings.setUnlabelledSet(properties.getProperty(annotationProperties[0]));
         }
 
-        if (tasks.contains(8) && properties.getProperty("unlabelledSet") != null)
-            settings.setUnlabelledSet(properties.getProperty("unlabelledSet"));
+        if (tools.contains(8) && properties.getProperty(annotationProperties[0]) != null)
+            settings.setUnlabelledSet(properties.getProperty(annotationProperties[0]));
     }
 
     private static void checkDatasetFormat() throws IOException {

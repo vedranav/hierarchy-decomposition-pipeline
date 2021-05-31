@@ -37,42 +37,37 @@ import static com.vedranavidulin.main.HierarchyDecompositionPipeline.checkProper
  * @author Vedrana Vidulin
  */
 public class Utils {
-    public String[] getSettingsForCrossValidation(String tasks, String outputPath) {
-        return new String[]{"tasks = " + tasks,
+    public String[] getSettingsForCrossValidation(String tools, String outputPath) {
+        return new String[]{"tools = " + tools,
                             "baselineDataset = " + new File("src/test/resources/enron.harff.zip").getAbsolutePath(),
                             "outputFolder = " + outputPath,
-                            "numFolds = 10",
-                            "numTrees = 500",
-                            "Xmx = 8g",
-                            "numProcessors = 4",
-                            "labelSubset = mostSpecific",
-                            "thresholds = 0.5,0.7,0.9"};
+                            "memory = 8g",
+                            "numProcessors = 4"};
     }
 
-    public void loadSettingsForCrossValidation(String tasks, String outputPath) {
+    public void loadSettingsForCrossValidation(String tools, String outputPath) {
         Properties prop = new Properties();
-        Arrays.asList(getSettingsForCrossValidation(tasks, outputPath)).forEach(setting -> prop.setProperty(setting.substring(0, setting.indexOf("=")).trim(), setting.substring(setting.indexOf("=") + 1).trim()));
+        Arrays.asList(getSettingsForCrossValidation(tools, outputPath)).forEach(setting -> prop.setProperty(setting.substring(0, setting.indexOf("=")).trim(), setting.substring(setting.indexOf("=") + 1).trim()));
         checkProperties(prop);
     }
 
     public String[] getSettingsForAnnotation(String trainingSetPath, String unlabelledSetPath, String outputPath) {
-        return new String[]{"tasks = 7",
+        return new String[]{"tools = 7",
                             "baselineDataset = " + new File(trainingSetPath).getAbsolutePath(),
                             "unlabelledSet = " + new File(unlabelledSetPath).getAbsolutePath(),
                             "outputFolder = " + outputPath,
-                            "numTrees = 500",
-                            "Xmx = 8g",
+                            "memory = 8g",
                             "numProcessors = 4"};
     }
 
     public String[] getSettingsForDatasetPropertiesBaseline(String baselineDatasetPath, String outputPath) {
-        return new String[]{"tasks = 8",
+        return new String[]{"tools = 8",
                             "baselineDataset = " + new File(baselineDatasetPath).getAbsolutePath(),
                             "outputFolder = " + outputPath};
     }
 
     public String[] getSettingsForDatasetPropertiesBaselineAndUnlabelled(String trainingSetPath, String unlabelledSetPath, String outputPath) {
-        return new String[]{"tasks = 8",
+        return new String[]{"tools = 8",
                             "baselineDataset = " + new File(trainingSetPath).getAbsolutePath(),
                             "unlabelledSet = " + new File(unlabelledSetPath).getAbsolutePath(),
                             "outputFolder = " + outputPath};

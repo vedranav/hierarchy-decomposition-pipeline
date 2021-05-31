@@ -35,7 +35,7 @@ public class Clus {
         File[] sFiles = listFilesWithEnding((crossValidation ? settings.getCrossValidationPath() : settings.getAnnotationsPath()) + decomposition + "/Results", ".s");
         
         for (File sFile : sFiles) {
-            Process ps = Runtime.getRuntime().exec(new String[]{"java", "-Xmx" + settings.getXmx(), "-jar", "clus.jar", "-forest", sFile.getAbsolutePath()});
+            Process ps = Runtime.getRuntime().exec(new String[]{"java", "-Xmx" + settings.getMemory(), "-jar", "clus.jar", "-forest", sFile.getAbsolutePath()});
             ps.waitFor();
 
             InputStream is = ps.getErrorStream();

@@ -21,7 +21,10 @@
  */
 package com.vedranavidulin.main;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
@@ -39,7 +42,7 @@ public class Settings {
     private String annotationsPath;
     private int numFolds;
     private int numTrees;
-    private String xmx;
+    private String memory;
     private int numProcessors;
     private String labelSubset;
     private Set<Float> thresholds;
@@ -113,14 +116,14 @@ public class Settings {
 
     public int getNumTrees() { return numTrees; }
 
-    public void setXmx(String xmx) {
-        this.xmx = xmx;
-        if (!Pattern.compile("((\\d)+[mgkMGK]+)").matcher(xmx).matches())
-            errorMsg("Xmx should be defined as a number and a letter 'k' or 'K' when the number indicates kilobytes, " +
-                    "'m' or 'M' when the number indicates megabytes, or 'g' or 'G' when the number indicates gigabytes.");
+    public void setMemory(String memory) {
+        this.memory = memory;
+        if (!Pattern.compile("((\\d)+[mgkMGK]+)").matcher(memory).matches())
+            errorMsg("Setting 'memory' should be defined as a number and a letter 'k' or 'K' when the number indicates kilobytes, " +
+                    "'m' or 'M' when the number indicates megabytes, or 'g' or 'G' when the number indicates gigabytes. For example, 2g.");
     }
 
-    public String getXmx() { return xmx; }
+    public String getMemory() { return memory; }
 
     public void setNumProcessors(String numProcessorsStr) {
         try {
@@ -157,6 +160,22 @@ public class Settings {
     }
 
     public Set<Float> getThresholds() { return thresholds; }
+
+    public void writeSettingsToFile(String decomposition, boolean crossValidation) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter((crossValidation ? getCrossValidationPath() : getAnnotationsPath()) + decomposition + "/Settings.txt"))) {
+            bw.write("baselineDataset = " + getBaselineDataset() + "\n");
+            if (!crossValidation)
+                bw.write("unlabelledSet = " + getUnlabelledSet() + "\n");
+            bw.write("outputFolder = " + getOutputPath() + "\n");
+            bw.write("numTrees = " + getNumTrees() + "\n");
+            if (crossValidation) {
+                bw.write("numFolds = " + getNumFolds() + "\n");
+                bw.write("thresholds = " + getThresholds().toString().replace("[", "").replace("]", "") + "\n");
+            }
+            bw.write("memory = " + getMemory() + "\n");
+            bw.write("numProcessors = " + getNumProcessors() + "\n");
+        }
+    }
 
     public static void errorMsg(String msg) {
         System.err.println(msg);
