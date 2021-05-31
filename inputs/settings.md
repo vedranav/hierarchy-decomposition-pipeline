@@ -63,9 +63,9 @@ Default value is 500.
 
 Maximal amount of memory available to machine learning algorithms.
 ```
-memoryInGigabytes = 5
+memory = 5g
 ```
-The value can be a decimal number. Default value is two.
+Value is composed of a number and a letter 'k' or 'K' when the number indicates kilobytes, 'm' or 'M' when the number indicates megabytes, or 'g' or 'G' when the number indicates gigabytes. Default value is 2g.
 
 ### Processors available to machine learning algorithms
 
@@ -73,7 +73,7 @@ Maximal number of processors available for parallel tasks.
 ```
 numProcessors = 4
 ```
-Default value is two.
+Default value is 2.
 
 ***
 
@@ -91,7 +91,7 @@ Sets a comma separated list of confidence thresholds at which the [threshold-dep
 ```
 thresholds = 0.5, 0.7
 ```
-Default value is "0.3, 0.5, 0.7".
+Default value is "0.5, 0.7, 0.9".
 
 ***
 
