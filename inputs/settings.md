@@ -17,14 +17,14 @@ Settings define which tools will the pipeline run and how. There are four groups
 ### Tools
 
 Sets which of the following tools will be executed:
-    1. Distribute examples into cross-validation folds
-    2. Run baseline algorithm
-    3. Run complete hierarchy decomposition algorithm "Labels without hierarchical relations"
-    4. Run complete hierarchy decomposition algorithm "Label vs. the rest"
-    5. Run partial hierarchy decomposition algorithm "Child vs. parent label"
-    6. Run partial hierarchy decomposition algorithm "Label specialization"
-    7. Annotate unlabelled set using classification model constructed with the baseline algorithm
-    8. Compute data set statistics
+1. Distribute examples into cross-validation folds
+2. Run baseline algorithm
+3. Run complete hierarchy decomposition algorithm "Labels without hierarchical relations"
+4. Run complete hierarchy decomposition algorithm "Label vs. the rest"
+5. Run partial hierarchy decomposition algorithm "Child vs. parent label"
+6. Run partial hierarchy decomposition algorithm "Label specialization"
+7. Annotate unlabelled set using classification model constructed with the baseline algorithm
+8. Compute data set statistics
 
 For example, this line will run the first six tools:
 ```
