@@ -26,9 +26,8 @@ Examples of settings files for three use cases, namely cross-validation, annotat
 
 The minimal settings file to compare performance of the Baseline and Labels without hierarchical relations algorithms on the [Enron data set](https://github.com/vedranav/hierarchy-decomposition-pipeline/raw/master/src/test/resources/enron.harff.zip) contains:
 
+**enron-cross-validation.s**
 ```
-enron-cross-validation.s
-*************************
 tools = 1-3
 baselineDataset = enron.harff.zip
 outputFolder = enron/
@@ -57,9 +56,8 @@ In this example, the pipeline used the default values for other settings relevan
 
 The minimal settings file to construct a classification model from the [Enron training set](https://github.com/vedranav/hierarchy-decomposition-pipeline/raw/master/src/test/resources/enron-training_set.harff.zip) and to use the model to annotate [unlabelled examples](https://github.com/vedranav/hierarchy-decomposition-pipeline/raw/master/src/test/resources/enron-unlabelled_set.harff.zip) contains:
 
+**enron-annotation.s**
 ```
-enron-annotation.s
-*******************
 tools = 7
 baselineDataset = enron-training_set.harff.zip
 unlabelledSet = enron-unlabelled_set.harff.zip
@@ -88,18 +86,18 @@ Other settings applicable to the annotation task are: numTrees, memory and numPr
 ## Compute data set properties
 
 The settings file to compute [data set properties](https://vedranav.github.io/hierarchy-decomposition-pipeline/inputs/repository.html) for the Enron data set is:
+
+**enron-dataset-properties.s**
 ```
-enron-dataset-properties.s
-***************************
 tools = 8
 baselineDataset = enron.harff.zip
 outputFolder = enron/
 ```
 
 The settings file to extract data set properties for the Enron training and unlabelled sets is:
+
+**enron-dataset-properties-training-and-unlabelled-set.s**
 ```
-enron-dataset-properties-training-and-unlabelled-set.s
-*********************************************************
 tools = 8
 baselineDataset = enron-training_set.harff.zip
 unlabelledSet = enron-unlabelled_set.harff.zip
