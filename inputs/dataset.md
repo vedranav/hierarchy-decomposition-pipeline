@@ -4,9 +4,9 @@ sort: 1
 
 # Data set
 
-The pipeline accepts data sets in **HARFF** format, which stands for **hierarchy-attribute-relation file format**. HARFF is an extension of the [ARFF format](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) that includes hierarchical class. The format is best illustrated with an example. Suppose that we want to construct a classification model that categorizes products into hierarchically organized categories based on their descriptions. We will address categories as **labels** and their hierarchical organization as **class hierarchy**. Class hierarchy and data set are:
+The pipeline accepts data sets in **HARFF** format, which stands for **hierarchy-attribute-relation file format**. HARFF is an extension of the [ARFF format](https://waikato.github.io/weka-wiki/formats_and_processing/arff_stable/) that includes hierarchical class. The format is best illustrated with an example. Suppose that we want to construct a classification model that categorizes products into hierarchically organized categories based on their descriptions. We will address categories as **labels** and their hierarchical organization as **hierarchical class**. Hierarchical class and data set are:
 
-**Class hierarchy:**
+**Hierarchical class:**
 ```mermaid
 graph TB;
     A(( ))-->B((apparel))
@@ -71,7 +71,7 @@ Next is an ordered sequence of attributes, each marked by the @ATTRIBUTE keyword
         @ATTRIBUTE most_represented_material {cotton, linen, elastane, polyester, leather, rubber, textile, plastic}
 ```
 
-- **Class attribute** contains class hierarchy. It is the last attribute in a data set defined as @ATTRIBUTE CLASS HIERARCHICAL [class hierarchy]. Class hierarchy is described with parent-child pairs of labels. For example, shirts and trousers are apparel, which is described as "apparel/shirts" and "apparel/trousers". When a parent is a root of hierarchy, then the keyword "root" is used. For example, "root/apparel" and "root/footwear". All pairs of labels from the class hierarchy must be enumerated. Labels can contain only alphanumeric characters and dots.
+- **Class attribute** contains hierarchical class. It is the last attribute in a data set defined as @ATTRIBUTE CLASS HIERARCHICAL [hierarchical class]. Hierarchical class is described with parent-child pairs of labels. For example, shirts and trousers are apparel, which is described as "apparel/shirts" and "apparel/trousers". When a parent is a root of hierarchy, then the keyword "root" is used. For example, "root/apparel" and "root/footwear". All pairs of labels from the hierarchical class must be enumerated. Labels can contain only alphanumeric characters and dots.
 
 ```
     @ATTRIBUTE CLASS HIERARCHICAL root/apparel, apparel/shirts, apparel/trousers, trousers/long, trousers/short, root/footwear, footwear/sneakers, footwear/socks, footwear/sandals
@@ -125,7 +125,7 @@ The pipeline checks if a data set is in correct format.
 ```
 
 ```note
-When the task is to estimate algorithm's performance in cross-validation, the input into the pipeline is a single data set. However, when the task is to annotate new examples, the input are two data sets. Common input for both tasks is a data set with annotated examples, named **baseline data set**. This data set is used to construct a classification model. Product categorization data set is an example of a baseline data set. The second data set, named **unlabelled set**, contains examples for which class attribute value is not known. In practice, this means that all examples in the unlabelled set are associated with root of a class hierarchy. For example, "7, no, linen, none, 72, yes, root". The header of unlabelled set is equal to those of the baseline data set.
+When the task is to estimate algorithm's performance in cross-validation, the input into the pipeline is a single data set. However, when the task is to annotate new examples, the input are two data sets. Common input for both tasks is a data set with annotated examples, named **baseline data set**. This data set is used to construct a classification model. Product categorization data set is an example of a baseline data set. The second data set, named **unlabelled set**, contains examples for which class attribute value is not known. In practice, this means that all examples in the unlabelled set are associated with root of a hierarchy. For example, "7, no, linen, none, 72, yes, root". The header of unlabelled set is equal to those of the baseline data set.
 ```
 
 ```warning

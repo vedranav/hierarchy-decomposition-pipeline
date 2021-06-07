@@ -9,7 +9,7 @@ The algorithms construct random forest ensembles of predictive clustering trees 
 
 The five algorithms represent class in different manner and construct different number of ensembles. Accordingly, they are divided in three groups:
 
-1. **Baseline** algorithm constructs a single ensemble of PCTs. Each PCT leaf represents the complete class hierarchy. When classifying a new example, each label in the hierarchy receives a probability that it is associated with the example. The probabilities are calculated according the leaf that the example reached. The algorithm enforces the hierarchy constraint, which ensures that children labels do not have probabilities higher than those of their parents.
+1. **Baseline** algorithm constructs a single ensemble of PCTs. Each PCT leaf represents the complete hierarchy. When classifying a new example, each label in the hierarchy receives a probability that it is associated with the example. The probabilities are calculated according the leaf that the example reached. The algorithm enforces the hierarchy constraint, which ensures that children labels do not have probabilities higher than those of their parents.
 
 2. **Partial hierarchy decomposition** algorithms construct multiple ensembles. Each ensemble predicts a sub-hierarchy. Algorithms in this group are *Child vs. parent label* and *Label specialization*.
 

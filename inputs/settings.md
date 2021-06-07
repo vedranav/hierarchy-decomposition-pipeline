@@ -38,14 +38,14 @@ The precondition for running tools 2-6 is to first distribute examples into cros
 
 Sets path to a data set with hierarchical class.
 ```
-baselineDataset = /data/Enron.harff.zip
+baselineDataset = data/Enron.harff.zip
 ```
 
 ### Output folder
 
 Sets path to a folder where the pipeline will write its output.
 ```
-outputFolder = /hierarchy-decomposition-pipeline/output/Enron/
+outputFolder = hierarchy-decomposition-pipeline/output/Enron/
 ```
 ***
 
@@ -100,5 +100,5 @@ Default value is "0.5, 0.7, 0.9".
 ### Unlabelled set
 Sets path to an unlabelled set. This setting is mandatory when annotation tool is used.
 ```
-unlabelledSet = /data/Enron-unlabelledSet.harff.zip
+unlabelledSet = data/Enron-unlabelledSet.harff.zip
 ```

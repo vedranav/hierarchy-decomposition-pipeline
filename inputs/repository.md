@@ -24,19 +24,19 @@ Data sets:
 Data sets are in [HARFF format](https://vedranav.github.io/hierarchy-decomposition-pipeline/inputs/dataset.html), which is a valid input into the pipeline.
 
 
-## Class hierarchy
+## Hierarchical class
 
 | Data set          | Labels | Leaves | Maximal depth | Type | Average forward branching factor | Average backward branching factor |
 | ----------------- | -----: | -----: | ------------: | ---- | -------------------------------: | --------------------------------: |
 | Enron             | 56     | 52     | 3             | tree | 11.20                            | 1                                 |
 | Phyletic profiles | 1,260  | 377    | 14            | DAG  | 2.63                             | 1.85                              |
 
-- **Labels** - The number of labels in class hierarchy
+- **Labels** - The number of labels in hierarchy
 - **Leaves** - The number of leaf labels
-- **Maximal depth** - The number of labels on the longest path in class hierarchy (root excluded)
-- **Type** - Class hierarchy can be tree-shaped or in the form of directed acyclic graph (DAG). In the former a label can have only one parent, while in the later a label can have multiple parents.
-- **Average forward branching factor** - The number of children labels per parent averaged over all parent labels in class hierarchy.
-- **Average backward branching factor** - The number of parent labels per child averaged over all children labels in class hierarchy. Backward branching factor is always one for tree-shaped hierarchies, while it is greater than one for DAG hierarchies.
+- **Maximal depth** - The number of labels on the longest path in hierarchy (root excluded)
+- **Type** - Hierarchy can be tree-shaped or in the form of directed acyclic graph (DAG). In the former a label can have only one parent, while in the later a label can have multiple parents.
+- **Average forward branching factor** - The number of children labels per parent averaged over all parent labels in hierarchy.
+- **Average backward branching factor** - The number of parent labels per child averaged over all children labels in hierarchy. Backward branching factor is always one for tree-shaped hierarchies, while it is greater than one for DAG hierarchies.
 
 
 ## Annotations
@@ -48,7 +48,7 @@ Data sets are in [HARFF format](https://vedranav.github.io/hierarchy-decompositi
 
 **Annotation** is an association between a label and an example.
 
-Annotation-related data set properties are best explained with an example. Suppose that we have the following class hierarchy:
+Annotation-related data set properties are best explained with an example. Suppose that we have the following hierarchy:
 
 ```mermaid
 graph TB;

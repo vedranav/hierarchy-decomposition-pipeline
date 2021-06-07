@@ -199,7 +199,7 @@ The pipeline outputs a confusion matrix and threshold-dependent measures for eac
 ```
 
 ```warning
-Accuracy is not a good measure of model's performance in the case of highly unbalanced labels. An example of a highly unbalanced label is when in 100 examples five are labeled with *l* and 95 as not-*l*. In such case, a model that would always return not-*l* as an answer would have 0.95 accuracy. At the same time it would have zero precision, recall and F-measure. Be aware of unbalanced labels in data sets with large class hierarchy, where the number of positive examples reduce with the depth of hierarchy.
+Accuracy is not a good measure of model's performance in the case of highly unbalanced labels. An example of a highly unbalanced label is when in 100 examples five are labeled with *l* and 95 as not-*l*. In such case, a model that would always return not-*l* as an answer would have 0.95 accuracy. At the same time it would have zero precision, recall and F-measure. Be aware of unbalanced labels in data sets with large hierarchy, where the number of positive examples reduce with the depth of hierarchy.
 ```
 
 ### Threshold-independent measures
