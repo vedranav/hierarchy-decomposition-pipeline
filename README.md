@@ -2,7 +2,7 @@
 
 Hierarchy decomposition pipeline is a supervised machine learning tool that constructs random forest ensembles from data sets with hierarchical class.
 
-![Data set with hierarchical class](images/HMC_dataset.png)
+<img src = "images/HMC_dataset.png" alt = "Data set with hierarchical class" width = "600">
 
 Suitable data sets have:
 - Class labels organised in a hierarchy
