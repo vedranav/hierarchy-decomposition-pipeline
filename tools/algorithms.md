@@ -29,7 +29,7 @@ The algorithm constructs an ensemble for each child-parent pair in the hierarchy
 
 A new example is classified with all of the ensembles. A PCT leaf that the example reaches contains a probability of label *l* knowing its parent. The probabilities from multiple ensembles are pulled together and hierarchy constraint is applied on them.
 
-<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Child_vs_parent_label.png" alt = "Child vs. parent label" width = "400">
+<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Child_vs_parent_label.png" alt = "Child vs. parent label" width = "350">
 
 
 ### Label specialization
@@ -43,7 +43,7 @@ The algorithm constructs an ensemble for each non-leaf node in the hierarchy. Th
 
 A new example is classified with all of the ensembles. A PCT leaf that the example reaches contains probabilities of children labels knowing their parent. The probabilities from multiple ensembles are pulled together and hierarchy constraint is applied on them.
 
-<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Label_specialization.png" alt = "Label specialization" width = "400">
+<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Label_specialization.png" alt = "Label specialization" width = "350">
 
 
 ## Complete hierarchy decomposition algorithms
@@ -63,7 +63,7 @@ The algorithm constructs an ensemble that differentiates among the most specific
 
 When classifying a new example, a PCT leaf that the example reaches contains probabilities that the example is associated with each of the most specific labels. Probabilities for inner labels are zero.
 
-<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Labels_without_hierarchical_relations.png" alt = "Labels without hierarchical relations" width = "400">
+<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Labels_without_hierarchical_relations.png" alt = "Labels without hierarchical relations" width = "350">
 
 
 ### Label vs. the rest
@@ -76,7 +76,7 @@ The algorithm constructs an ensemble for each of the most specific labels. Each 
 
 A new example is classified with all of the ensembles. A PCT leaf that the example reaches contains a probability that the example is associated with the label *l*. The probabilities from multiple ensembles are pulled together. Probabilities for inner labels are zero.
 
-<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Label_vs_the_rest.png" alt = "Label vs. the rest" width = "350">
+<img src = "https://vedranav.github.io/hierarchy-decomposition-pipeline/images/tools/Label_vs_the_rest.png" alt = "Label vs. the rest" width = "300">
 
 
 ## Why the pipeline implements five algorithms?
