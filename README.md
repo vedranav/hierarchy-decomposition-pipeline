@@ -31,7 +31,7 @@ java -jar hierarchy-decomposition-pipeline-0.0.1.jar settings.s
 
 The pipeline is based on ideas presented in the following paper:
 
-Vidulin V., Džeroski S. (2020) Hierarchy Decomposition Pipeline: A Toolbox for Comparison of Model Induction Algorithms on Hierarchical Multi-label Classification Problems. In: Appice A., Tsoumakas G., Manolopoulos Y., Matwin S. (eds) Discovery Science. DS 2020. Lecture Notes in Computer Science, vol 12323. Springer, Cham. https://doi.org/10.1007/978-3-030-61527-7_32
+Vidulin V., Džeroski S. (2020) Hierarchy Decomposition Pipeline: A Toolbox for Comparison of Model Induction Algorithms on Hierarchical Multi-label Classification Problems. In: Appice A., Tsoumakas G., Manolopoulos Y., Matwin S. (eds) Discovery Science. DS 2020. Lecture Notes in Computer Science, vol 12323. Springer, Cham. [https://doi.org/10.1007/978-3-030-61527-7_32](https://doi.org/10.1007/978-3-030-61527-7_32)
 
 If you find the pipeline useful, please cite that reference.
 
