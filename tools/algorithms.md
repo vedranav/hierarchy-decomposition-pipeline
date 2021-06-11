@@ -92,3 +92,11 @@ Accordingly, there is no single best performing algorithm. For example:
 - When examples are associated solely with single paths, which always end with hierarchy leaf labels, Label vs. the rest algorithm outperforms the other algorithms. In this case, hierarchical structure over labels introduces unnecessary noise to the model induction process.
 
 In many cases it is not clear which algorithm will outperform the others. Therefore, the pipeline implements the five algorithms and the tool that compares their predictive performance in cross-validation.
+
+## Further reading
+
+- PCTs are explained in the paper:
+Vens C., Struyf J., Schietgat L., Džeroski S., Blockeel H. (2008) Decision Trees for Hierarchical Multi-label Classification. Machine Learning, 73, 185-214. [https://doi.org/10.1007/s10994-008-5077-3](https://doi.org/10.1007/s10994-008-5077-3)
+
+- The five algorithms that construct ensemble models from data sets with hierarchical class are explained in the paper:
+Vidulin V., Džeroski S. (2020) Hierarchy Decomposition Pipeline: A Toolbox for Comparison of Model Induction Algorithms on Hierarchical Multi-label Classification Problems. In: Appice A., Tsoumakas G., Manolopoulos Y., Matwin S. (eds) Discovery Science. DS 2020. Lecture Notes in Computer Science, vol 12323. Springer, Cham. [https://doi.org/10.1007/978-3-030-61527-7_32](https://doi.org/10.1007/978-3-030-61527-7_32)
